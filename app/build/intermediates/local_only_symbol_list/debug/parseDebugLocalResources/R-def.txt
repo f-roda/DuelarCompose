@@ -1,0 +1,15 @@
+R_DEF: Internal format may change without notice
+local
+drawable duelar_icon_large
+drawable logo_duelar
+drawable splash_background
+drawable splash_duelar
+mipmap ic_launcher
+mipmap ic_launcher_round
+raw ambient_bowls
+raw ambient_piano
+raw ambient_rain
+raw ambient_waves
+raw ambient_wind
+raw ambient_zen
+style AppTheme
