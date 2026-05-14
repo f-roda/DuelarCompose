@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="duelar_blue_dark">#1E5AA8</color>
+    <color name="duelar_blue">#4A90E2</color>
+    <color name="duelar_blue_soft">#B6D3F2</color>
+    <color name="duelar_coral">#FF8A65</color>
+    <color name="duelar_orange">#FFB15E</color>
+    <color name="duelar_bg">#F4F8FF</color>
+</resources>
