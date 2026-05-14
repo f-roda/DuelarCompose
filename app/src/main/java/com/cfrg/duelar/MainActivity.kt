@@ -32,6 +32,12 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.runtime.*
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -44,6 +50,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import java.text.Normalizer
 import androidx.compose.foundation.Image
+import androidx.compose.animation.Crossfade
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.geometry.CornerRadius
@@ -161,7 +168,12 @@ class MainActivity : ComponentActivity() {
             }
 
             Surface(color = bg) {
-                when (screen) {
+                Crossfade(
+                    targetState = screen,
+                    animationSpec = tween(350),
+                    label = "screenTransition"
+                ) { currentScreen ->
+                    when (currentScreen) {
                     Screen.Splash -> SplashScreen()
                     Screen.Welcome -> WelcomeScreen(
                         onStart = { screen = Screen.LossType }
@@ -400,6 +412,7 @@ class MainActivity : ComponentActivity() {
                         },
                         onBack = { screen = Screen.Home }
                     )
+                    }
                 }
             }
         }
@@ -1131,10 +1144,10 @@ class MainActivity : ComponentActivity() {
 
             PrimaryButton("Continuar con el día $currentDay", onOpenDay)
             PrimaryButton("Ver los 30 días", onOpenList)
+            PrimaryButton("Ver mis señales", onOpenInsights)
 
             val menuItems = buildList<Pair<String, () -> Unit>> {
                 add("Mi historial" to onOpenHistory)
-                add("Ver insights" to onOpenInsights)
                 add("Configuración" to onOpenSettings)
                 add("Exportar registros" to onExport)
                 if (currentDay >= 30) add("Ver cierre del ciclo" to onOpenFinal)
@@ -1387,6 +1400,16 @@ class MainActivity : ComponentActivity() {
     private fun MeditationTimerCard() {
         var remainingSeconds by remember { mutableIntStateOf(0) }
         var running by remember { mutableStateOf(false) }
+        val breathing = rememberInfiniteTransition(label = "breathing")
+        val breathScale by breathing.animateFloat(
+            initialValue = 0.85f,
+            targetValue = 1.15f,
+            animationSpec = infiniteRepeatable(
+                animation = tween(4000),
+                repeatMode = RepeatMode.Reverse
+            ),
+            label = "breathScale"
+        )
 
         LaunchedEffect(running, remainingSeconds) {
             if (running && remainingSeconds > 0) {
@@ -1403,9 +1426,35 @@ class MainActivity : ComponentActivity() {
             modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
         ) {
             Column(Modifier.padding(22.dp)) {
-                Text("Temporizador de pausa", color = ink, fontSize = 19.sp, fontWeight = FontWeight.Bold)
+                Text("Pausa guiada de respiración", color = ink, fontSize = 19.sp, fontWeight = FontWeight.Bold)
                 Spacer(Modifier.height(8.dp))
-                Text(if (remainingSeconds > 0) "${remainingSeconds / 60}:${(remainingSeconds % 60).toString().padStart(2, '0')}" else "Elegí una duración", color = ink, fontSize = 30.sp, fontWeight = FontWeight.Bold)
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(180.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Surface(
+                        color = accentSoft.copy(alpha = if (running) 0.8f else 0.45f),
+                        shape = RoundedCornerShape(200.dp),
+                        modifier = Modifier
+                            .size(if (running) 130.dp else 110.dp)
+                            .graphicsLayer {
+                                scaleX = if (running) breathScale else 1f
+                                scaleY = if (running) breathScale else 1f
+                            }
+                    ) {}
+
+                    Text(
+                        if (remainingSeconds > 0)
+                            "${remainingSeconds / 60}:${(remainingSeconds % 60).toString().padStart(2, '0')}"
+                        else
+                            "Respirá",
+                        color = ink,
+                        fontSize = 28.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
                 Spacer(Modifier.height(10.dp))
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     Button(onClick = { remainingSeconds = 180; running = true }, modifier = Modifier.weight(1f), colors = ButtonDefaults.buttonColors(containerColor = accent)) { Text("3 min") }
