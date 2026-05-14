@@ -20,6 +20,12 @@ color androidx_core_ripple_material_light
 color androidx_core_secondary_text_default_material_light
 color call_notification_answer_color
 color call_notification_decline_color
+color duelar_bg
+color duelar_blue
+color duelar_blue_dark
+color duelar_blue_soft
+color duelar_coral
+color duelar_orange
 color notification_action_color_filter
 color notification_icon_bg_color
 color vector_tint_color
@@ -46,7 +52,6 @@ dimen notification_small_icon_size_as_large
 dimen notification_subtext_size
 dimen notification_top_pad
 dimen notification_top_pad_large_text
-drawable duelar_icon_large
 drawable ic_call_answer
 drawable ic_call_answer_low
 drawable ic_call_answer_video
@@ -262,7 +267,6 @@ string tab
 string template_percent
 string tooltip_description
 string tooltip_label
-style AppTheme
 style DialogWindowTheme
 style EdgeToEdgeFloatingDialogTheme
 style EdgeToEdgeFloatingDialogWindowTheme

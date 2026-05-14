@@ -1,6 +1,11 @@
 R_DEF: Internal format may change without notice
 local
-drawable duelar_icon_large
+color duelar_bg
+color duelar_blue
+color duelar_blue_dark
+color duelar_blue_soft
+color duelar_coral
+color duelar_orange
 drawable logo_duelar
 drawable splash_background
 drawable splash_duelar
@@ -12,4 +17,3 @@ raw ambient_rain
 raw ambient_waves
 raw ambient_wind
 raw ambient_zen
-style AppTheme

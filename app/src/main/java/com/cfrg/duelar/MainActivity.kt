@@ -132,7 +132,7 @@ class MainActivity : ComponentActivity() {
             var screen by remember { mutableStateOf(Screen.Splash) }
 
             LaunchedEffect(Unit) {
-                delay(1500)
+                delay(2500)
                 screen = if (prefs.getBoolean("onboardingDone", false)) Screen.Home else Screen.Welcome
             }
             var selectedLoss by remember { mutableStateOf(prefs.getString("lossType", "") ?: "") }
@@ -400,37 +400,6 @@ class MainActivity : ComponentActivity() {
                         },
                         onBack = { screen = Screen.Home }
                     )
-
-                    Screen.Settings -> SettingsScreen(
-                        prefs = prefs,
-                        onNotificationsChange = { enabled, hour, minute ->
-                            prefs.edit()
-                                .putBoolean("notificationsEnabled", enabled)
-                                .putInt("notificationHour", hour)
-                                .putInt("notificationMinute", minute)
-                                .apply()
-
-                            if (enabled) {
-                                scheduleDailyReminder(hour, minute)
-                                Toast.makeText(this, "Notificación diaria activada", Toast.LENGTH_SHORT).show()
-                            } else {
-                                cancelDailyReminder()
-                                Toast.makeText(this, "Notificaciones desactivadas", Toast.LENGTH_SHORT).show()
-                            }
-                        },
-                        onReset = {
-                            cancelDailyReminder()
-                            prefs.edit().clear().apply()
-                            selectedLoss = ""
-                            currentDay = 1
-                            selectedDay = 1
-                            intensity = 5
-                            primaryStage = GriefStage.Sadness
-                            secondaryStage = GriefStage.Shock
-                            screen = Screen.Welcome
-                        },
-                        onBack = { screen = Screen.Home }
-                    )
                 }
             }
         }
@@ -443,39 +412,23 @@ class MainActivity : ComponentActivity() {
                 .fillMaxSize()
                 .background(
                     Brush.verticalGradient(
-                        colors = listOf(bgWarm, bg, bgSoftBlue)
+                        colors = listOf(
+                            Color(0xFFEAF4FF),
+                            Color(0xFFB6D3F2),
+                            Color(0xFFFF8A65)
+                        )
                     )
                 ),
             contentAlignment = Alignment.Center
         ) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Surface(
-                    color = accentSoft.copy(alpha = 0.65f),
-                    shape = RoundedCornerShape(40.dp),
-                    modifier = Modifier.size(96.dp)
-                ) {
-                    Box(contentAlignment = Alignment.Center) {
-                        Text("◌", color = accent, fontSize = 54.sp, fontWeight = FontWeight.Bold)
-                    }
-                }
-
-                Spacer(Modifier.height(22.dp))
-
-                Text(
-                    "Duelar",
-                    color = ink,
-                    fontSize = 42.sp,
-                    fontWeight = FontWeight.Bold
-                )
-
-                Spacer(Modifier.height(8.dp))
-
-                Text(
-                    "Acompañarte paso a paso",
-                    color = muted,
-                    fontSize = 18.sp
-                )
-            }
+            Image(
+                painter = painterResource(id = R.drawable.splash_duelar),
+                contentDescription = "Duelar",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(360.dp),
+                contentScale = ContentScale.Fit
+            )
         }
     }
 

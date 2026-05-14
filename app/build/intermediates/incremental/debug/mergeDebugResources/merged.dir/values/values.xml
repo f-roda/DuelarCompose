@@ -5,6 +5,12 @@
     <color name="androidx_core_secondary_text_default_material_light">#8a000000</color>
     <color name="call_notification_answer_color">#1d873b</color>
     <color name="call_notification_decline_color">#d93025</color>
+    <color name="duelar_bg">#F4F8FF</color>
+    <color name="duelar_blue">#4A90E2</color>
+    <color name="duelar_blue_dark">#1E5AA8</color>
+    <color name="duelar_blue_soft">#B6D3F2</color>
+    <color name="duelar_coral">#FF8A65</color>
+    <color name="duelar_orange">#FFB15E</color>
     <color name="notification_action_color_filter">#ffffffff</color>
     <color name="notification_icon_bg_color">#ff9e9e9e</color>
     <dimen name="compat_button_inset_horizontal_material">4dp</dimen>
@@ -188,12 +194,6 @@
     <string name="template_percent"><ns2:g id="percentage">%1$d</ns2:g> percent.</string>
     <string name="tooltip_description">tooltip</string>
     <string name="tooltip_label">show tooltip</string>
-    <style name="AppTheme" parent="android:style/Theme.Material.Light.NoActionBar">
-        <item name="android:fontFamily">sans</item>
-        <item name="android:windowLightStatusBar">true</item>
-        <item name="android:navigationBarColor">#F5EFE6</item>
-        <item name="android:statusBarColor">#F5EFE6</item>
-    </style>
     <style name="DialogWindowTheme">
         <item name="android:windowClipToOutline">false</item>
     </style>

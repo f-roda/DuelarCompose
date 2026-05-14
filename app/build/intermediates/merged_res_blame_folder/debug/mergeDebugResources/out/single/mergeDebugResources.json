@@ -40,10 +40,6 @@
         "source": "com.cfrg.duelar.app-main-47:/drawable/splash_background.xml"
     },
     {
-        "merged": "com.cfrg.duelar.app-debug-45:/drawable-nodpi_duelar_icon_large.png.flat",
-        "source": "com.cfrg.duelar.app-main-47:/drawable-nodpi/duelar_icon_large.png"
-    },
-    {
         "merged": "com.cfrg.duelar.app-debug-45:/raw_ambient_piano.wav.flat",
         "source": "com.cfrg.duelar.app-main-47:/raw/ambient_piano.wav"
     },
