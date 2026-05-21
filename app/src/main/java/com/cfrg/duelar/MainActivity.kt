@@ -9,6 +9,8 @@ import android.content.Intent
 import android.os.Build
 import android.media.MediaPlayer
 import android.widget.Toast
+import android.graphics.Paint
+import android.graphics.Typeface
 import kotlinx.coroutines.delay
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -42,6 +44,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -91,6 +95,11 @@ data class JournalInsight(
     val secondaryText: String,
     val evolutionText: String,
     val suggestionText: String
+)
+
+data class TodaySignal(
+    val title: String,
+    val body: String
 )
 
 data class InsightPattern(
@@ -904,6 +913,38 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
+    private fun TodaySignalCard(signal: TodaySignal) {
+        Card(
+            colors = CardDefaults.cardColors(containerColor = card.copy(alpha = 0.94f)),
+            shape = RoundedCornerShape(30.dp),
+            elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp)
+        ) {
+            Column(
+                modifier = Modifier.padding(22.dp)
+            ) {
+                Text(
+                    signal.title,
+                    color = ink,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold
+                )
+
+                Spacer(Modifier.height(10.dp))
+
+                Text(
+                    signal.body,
+                    color = muted,
+                    fontSize = 17.sp,
+                    lineHeight = 27.sp
+                )
+            }
+        }
+    }
+
+    @Composable
     private fun PrimaryButton(text: String, onClick: () -> Unit) {
         Button(
             onClick = onClick,
@@ -1134,6 +1175,8 @@ class MainActivity : ComponentActivity() {
             Title("Tu camino")
             Body(homeMessage(currentDay, intensity))
             Spacer(Modifier.height(22.dp))
+
+            TodaySignalCard(buildTodaySignal(prefs))
 
             ProgressSummary(currentDay, completedCount, streak, favoriteCount, prefs)
 
@@ -1536,17 +1579,9 @@ class MainActivity : ComponentActivity() {
     private fun EmotionTimelineCard(prefs: android.content.SharedPreferences) {
         val days = buildEmotionDays(prefs)
         val withData = days.filter { it.hasData }
-        val dominant = withData
-            .groupingBy { it.label }
-            .eachCount()
-            .maxByOrNull { it.value }
-            ?.key ?: "Sin registros"
-
-        val avgIntensity = if (withData.isNotEmpty()) {
-            withData.map { it.intensity }.average().toInt().coerceIn(1, 10)
-        } else {
-            0
-        }
+        val latestSignal = withData.maxByOrNull { it.day }
+        val latestEmotion = latestSignal?.label ?: "Sin registros"
+        val latestIntensity = latestSignal?.intensity ?: 0
 
         Card(
             colors = CardDefaults.cardColors(containerColor = card.copy(alpha = 0.94f)),
@@ -1594,13 +1629,13 @@ class MainActivity : ComponentActivity() {
                     horizontalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     MiniMetric(
-                        title = "Más presente",
-                        value = dominant,
+                        title = "Última emoción",
+                        value = latestEmotion,
                         modifier = Modifier.weight(1f)
                     )
                     MiniMetric(
-                        title = "Intensidad",
-                        value = if (avgIntensity > 0) "$avgIntensity/10" else "—",
+                        title = "Última intensidad",
+                        value = if (latestIntensity > 0) "$latestIntensity/10" else "—",
                         modifier = Modifier.weight(1f)
                     )
                 }
@@ -1742,6 +1777,16 @@ class MainActivity : ComponentActivity() {
                         }
 
                         val dataDays = days.filter { it.hasData }
+                        val maxLabelDay = dataDays.maxOfOrNull { it.day } ?: 0
+                        val labelDays = setOf(maxLabelDay)
+
+                        val labelPaint = Paint().apply {
+                            color = ink.toArgb()
+                            textSize = 23f
+                            typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
+                            textAlign = Paint.Align.CENTER
+                            isAntiAlias = true
+                        }
 
                         // Línea principal
                         dataDays.zipWithNext().forEach { (a, b) ->
@@ -1775,6 +1820,38 @@ class MainActivity : ComponentActivity() {
                                 radius = 10.5f,
                                 center = Offset(x, y)
                             )
+
+                            if (item.day in labelDays) {
+                                val label = shortEmotionLabel(item.label)
+                                val labelWidth = labelPaint.measureText(label)
+                                val labelX = x.coerceIn(labelWidth / 2f + 10f, w - labelWidth / 2f - 10f)
+                                val labelY = (y - 24f).coerceAtLeast(28f)
+                                val rectTop = labelY - 25f
+                                val rectLeft = labelX - labelWidth / 2f - 14f
+                                val rectWidth = labelWidth + 28f
+                                val rectHeight = 32f
+
+                                drawRoundRect(
+                                    color = Color.White.copy(alpha = 0.92f),
+                                    topLeft = Offset(rectLeft, rectTop),
+                                    size = Size(rectWidth, rectHeight),
+                                    cornerRadius = CornerRadius(18f, 18f)
+                                )
+
+                                drawRoundRect(
+                                    color = item.color.copy(alpha = 0.22f),
+                                    topLeft = Offset(rectLeft, rectTop),
+                                    size = Size(rectWidth, rectHeight),
+                                    cornerRadius = CornerRadius(18f, 18f)
+                                )
+
+                                drawContext.canvas.nativeCanvas.drawText(
+                                    label,
+                                    labelX,
+                                    labelY,
+                                    labelPaint
+                                )
+                            }
                         }
                     }
                 }
@@ -2184,6 +2261,68 @@ class MainActivity : ComponentActivity() {
             "esperanza" -> Color(0xFF79C8D8)
             else -> accent
         }
+    }
+
+    private fun buildTodaySignal(prefs: android.content.SharedPreferences): TodaySignal {
+        val entries = (1..30).mapNotNull { day ->
+            val text = readJournalForDay(prefs, day)
+            if (text.isNotBlank()) day to text else null
+        }
+
+        if (entries.size < 2) {
+            return TodaySignal(
+                title = "Señal de hoy",
+                body = "Todavía hay poco registro como para leer un patrón claro. Por ahora, lo importante es que estás creando un espacio para escucharte."
+            )
+        }
+
+        val recentEntries = entries.takeLast(5)
+        val recentText = recentEntries.joinToString(" ") { it.second }
+
+        val patterns = scorePatterns(recentText)
+            .filter { it.score > 0 }
+            .sortedByDescending { it.score }
+
+        val mainPattern = patterns.firstOrNull()
+
+        if (mainPattern == null) {
+            return TodaySignal(
+                title = "Señal de hoy",
+                body = "Tus últimos registros muestran un proceso mezclado, sin una emoción dominante clara. No hace falta forzar una conclusión. Seguí escribiendo con honestidad."
+            )
+        }
+
+        val intensities = recentEntries.map { (_, text) ->
+            val patternScore = scorePatterns(text).maxOfOrNull { it.score } ?: 0
+            estimateIntensity(text, patternScore)
+        }
+
+        val firstHalf = intensities.take((intensities.size / 2).coerceAtLeast(1)).average()
+        val secondHalf = intensities.takeLast((intensities.size / 2).coerceAtLeast(1)).average()
+
+        val trendText = when {
+            secondHalf >= firstHalf + 2 -> "En los últimos registros la intensidad parece haber subido un poco."
+            secondHalf <= firstHalf - 2 -> "En los últimos registros la intensidad parece haber bajado un poco."
+            else -> "La intensidad parece mantenerse relativamente estable."
+        }
+
+        val guidance = when (mainPattern.key) {
+            "culpa" -> "Hoy puede ayudarte bajar el juicio interno. Mirar con honestidad no significa castigarte."
+            "tristeza" -> "Hoy no necesitás salir rápido de la tristeza. Solo darle un lugar cuidado para que no ocupe todo."
+            "rabia" -> "Hoy puede servirte descargar sin lastimarte ni lastimar. Respirar antes de actuar ya es una forma de cuidado."
+            "ansiedad" -> "Hoy conviene volver al cuerpo y a una sola acción concreta. No intentes ordenar toda tu vida en un día."
+            "shock" -> "Hoy no fuerces claridad. Volvé a lo básico: respirar, comer algo, descansar y sentirte a salvo."
+            "soledad" -> "Hoy podría ayudarte acercarte a alguien seguro, aunque sea con una frase simple."
+            "agotamiento" -> "Hoy avanzar puede significar hacer menos. Cuidar lo básico también es parte del proceso."
+            "aceptacion" -> "Si aparece algo de calma, no la rechaces por culpa. También forma parte del duelo."
+            "esperanza" -> "Cuidá esa pequeña señal de vida sin apurarla. Un paso posible alcanza."
+            else -> mainPattern.suggestion
+        }
+
+        return TodaySignal(
+            title = "Señal de hoy",
+            body = "En tus últimos registros aparece con más fuerza ${mainPattern.title.lowercase()}. $trendText $guidance"
+        )
     }
 
     private fun buildJournalInsight(prefs: android.content.SharedPreferences): JournalInsight {
@@ -2748,3 +2887,18 @@ class MainActivity : ComponentActivity() {
         "Cerrar con una respiración lenta y una frase de continuidad."
     )
 }
+
+    private fun shortEmotionLabel(label: String): String {
+        val clean = Normalizer.normalize(label.lowercase(), Normalizer.Form.NFD)
+            .replace("\\p{Mn}+".toRegex(), "")
+        return when {
+            clean.contains("shock") || clean.contains("bloqueo") -> "Shock"
+            clean.contains("culpa") -> "Culpa"
+            clean.contains("tristeza") -> "Tristeza"
+            clean.contains("ansiedad") || clean.contains("desborde") -> "Ansiedad"
+            clean.contains("rabia") || clean.contains("enojo") || clean.contains("injusticia") -> "Rabia"
+            clean.contains("aceptacion") || clean.contains("aceptación") -> "Aceptación"
+            clean.contains("esperanza") || clean.contains("reconstruccion") || clean.contains("reconstrucción") -> "Esperanza"
+            else -> label.take(12)
+        }
+    }
