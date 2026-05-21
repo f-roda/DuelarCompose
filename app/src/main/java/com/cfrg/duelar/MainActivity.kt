@@ -2062,17 +2062,111 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun estimateIntensity(text: String, score: Int): Int {
+        val clean = normalizeText(text)
         val words = normalizedWords(text).size
         val exclamations = text.count { it == '!' }
-        val strongWords = listOf(
-            "mucho", "demasiado", "siempre", "nunca", "no puedo", "me supera",
-            "inmanejable", "desbordado", "desbordada", "terrible", "horrible"
-        ).sumOf { phrase ->
-            Regex(Regex.escape(phrase), RegexOption.IGNORE_CASE).findAll(text).count()
+
+        val veryHighSignals = listOf(
+            "no puedo mas",
+            "no puedo más",
+            "no aguanto",
+            "me quiero morir",
+            "no quiero vivir",
+            "insoportable",
+            "desesperado",
+            "desesperada",
+            "devastado",
+            "devastada",
+            "destrozado",
+            "destrozada",
+            "colapsado",
+            "colapsada",
+            "me supera",
+            "me desborda",
+            "panico",
+            "pánico"
+        )
+
+        val highSignals = listOf(
+            "mucho dolor",
+            "duele mucho",
+            "me duele mucho",
+            "horrible",
+            "terrible",
+            "demasiado",
+            "vacío",
+            "vacio",
+            "angustia",
+            "ansiedad",
+            "rabia",
+            "bronca",
+            "culpa",
+            "llorar",
+            "llore",
+            "lloré",
+            "tristeza profunda",
+            "sin fuerzas",
+            "agotado",
+            "agotada"
+        )
+
+        val mediumSignals = listOf(
+            "triste",
+            "dolor",
+            "enojo",
+            "miedo",
+            "extraño",
+            "extrañar",
+            "soledad",
+            "solo",
+            "sola",
+            "preocupado",
+            "preocupada",
+            "nervioso",
+            "nerviosa"
+        )
+
+        val lowSignals = listOf(
+            "calma",
+            "tranquilo",
+            "tranquila",
+            "acepto",
+            "aceptacion",
+            "aceptación",
+            "alivio",
+            "esperanza",
+            "mejor",
+            "paz",
+            "agradecido",
+            "agradecida",
+            "claridad"
+        )
+
+        var intensity = 1
+
+        veryHighSignals.forEach { phrase ->
+            if (clean.contains(normalizeText(phrase))) intensity += 4
         }
 
-        val raw = 2 + score + (words / 35) + strongWords * 2 + exclamations
-        return raw.coerceIn(1, 10)
+        highSignals.forEach { phrase ->
+            if (clean.contains(normalizeText(phrase))) intensity += 3
+        }
+
+        mediumSignals.forEach { phrase ->
+            if (clean.contains(normalizeText(phrase))) intensity += 2
+        }
+
+        lowSignals.forEach { phrase ->
+            if (clean.contains(normalizeText(phrase))) intensity -= 1
+        }
+
+        intensity += (score / 2).coerceIn(0, 3)
+
+        if (words > 40) intensity += 1
+        if (words > 90) intensity += 1
+        if (exclamations >= 2) intensity += 1
+
+        return intensity.coerceIn(1, 10)
     }
 
     private fun colorForPattern(key: String?): Color {
@@ -2132,8 +2226,71 @@ class MainActivity : ComponentActivity() {
                 "También se asoma ${it.title.lowercase()}. ${it.message}"
             }.orEmpty(),
             evolutionText = buildEvolutionText(entries),
-            suggestionText = first.suggestion + " Podría ayudarte volver a los días ${first.days}."
+            suggestionText = buildSuggestionTextForProgress(prefs, first)
         )
+    }
+
+    private fun buildSuggestionTextForProgress(
+        prefs: android.content.SharedPreferences,
+        pattern: InsightPattern
+    ): String {
+        val suggestedDays = findRelevantCompletedDays(prefs, pattern)
+
+        return if (suggestedDays.isNotEmpty()) {
+            val daysText = suggestedDays.joinToString(", ")
+            "${pattern.suggestion} También podría ayudarte volver a revisar ${if (suggestedDays.size == 1) "el día" else "los días"} $daysText, porque ahí ya trabajaste algo relacionado con esto."
+        } else {
+            "${pattern.suggestion} Por ahora no hace falta volver a días anteriores. Seguí con el día actual y observá si esta emoción vuelve a aparecer."
+        }
+    }
+
+    private fun findRelevantCompletedDays(
+        prefs: android.content.SharedPreferences,
+        pattern: InsightPattern
+    ): List<Int> {
+        val completedDays = (1..30).filter { day ->
+            prefs.getBoolean("completed_$day", false)
+        }
+
+        if (completedDays.isEmpty()) return emptyList()
+
+        val rankedDays = completedDays.mapNotNull { day ->
+            val journalText = readJournalForDay(prefs, day)
+
+            val dayText = buildString {
+                append(journalText)
+                append(" ")
+                append(dayTitles.getOrNull(day - 1).orEmpty())
+                append(" ")
+                append(dailyReadings.getOrNull(day - 1).orEmpty())
+                append(" ")
+                append(dailyExercises.getOrNull(day - 1).orEmpty())
+                append(" ")
+                append(dailyJournals.getOrNull(day - 1).orEmpty())
+                append(" ")
+                append(dailyActions.getOrNull(day - 1).orEmpty())
+            }
+
+            val dayPattern = scorePatterns(dayText)
+                .firstOrNull { it.key == pattern.key }
+
+            val score = dayPattern?.score ?: 0
+
+            if (score > 0) {
+                day to score
+            } else {
+                null
+            }
+        }
+
+        return rankedDays
+            .sortedWith(
+                compareByDescending<Pair<Int, Int>> { it.second }
+                    .thenByDescending { it.first }
+            )
+            .take(3)
+            .map { it.first }
+            .sorted()
     }
 
     private fun normalizedWords(text: String): List<String> {
