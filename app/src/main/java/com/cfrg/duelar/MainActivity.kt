@@ -863,6 +863,17 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    private fun playBell() {
+        try {
+            val player = MediaPlayer.create(this, R.raw.ambient_bowls)
+            player.setOnCompletionListener { it.release() }
+            player.setVolume(0.5f, 0.5f)
+            player.start()
+        } catch (e: Exception) {
+            // Ignore
+        }
+    }
+
     private fun scheduleDailyReminder(hour: Int, minute: Int) {
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val intent = Intent(this, ReminderReceiver::class.java)
@@ -1417,7 +1428,10 @@ class MainActivity : ComponentActivity() {
                 onSelectSound = onAmbientChange,
                 onToggle = onToggleAmbient
             )
-            MeditationTimerCard()
+            MeditationTimerCard(
+                isAmbientPlaying = isAmbientPlaying,
+                onToggleAmbient = onToggleAmbient
+            )
             SectionCard("Acción mínima", content.action)
             JournalInput(value = journalText, onChange = onJournalChange)
 
@@ -1527,7 +1541,10 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
-    private fun MeditationTimerCard() {
+    private fun MeditationTimerCard(
+        isAmbientPlaying: Boolean,
+        onToggleAmbient: () -> Unit
+    ) {
         var totalSeconds by remember { mutableIntStateOf(0) }
         var remainingSeconds by remember { mutableIntStateOf(0) }
         var running by remember { mutableStateOf(false) }
@@ -1561,10 +1578,18 @@ class MainActivity : ComponentActivity() {
 
         LaunchedEffect(running, remainingSeconds) {
             if (running && remainingSeconds > 0) {
+                if (remainingSeconds == totalSeconds || remainingSeconds == 60 || remainingSeconds == 10) {
+                    playBell()
+                }
                 delay(1000)
                 remainingSeconds -= 1
+                if (remainingSeconds == 0) playBell()
             }
             if (remainingSeconds <= 0 && totalSeconds > 0) {
+                if (running) {
+                    // Timer finished
+                    if (isAmbientPlaying) onToggleAmbient()
+                }
                 running = false
                 totalSeconds = 0
             }
@@ -1660,9 +1685,18 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
-                        TimerOption("1 min") { remainingSeconds = 60; totalSeconds = 60; running = true }
-                        TimerOption("3 min") { remainingSeconds = 180; totalSeconds = 180; running = true }
-                        TimerOption("5 min") { remainingSeconds = 300; totalSeconds = 300; running = true }
+                        TimerOption("1 min") { 
+                            remainingSeconds = 60; totalSeconds = 60; running = true 
+                            if (!isAmbientPlaying) onToggleAmbient()
+                        }
+                        TimerOption("3 min") { 
+                            remainingSeconds = 180; totalSeconds = 180; running = true 
+                            if (!isAmbientPlaying) onToggleAmbient()
+                        }
+                        TimerOption("5 min") { 
+                            remainingSeconds = 300; totalSeconds = 300; running = true 
+                            if (!isAmbientPlaying) onToggleAmbient()
+                        }
                     }
                 } else {
                     Row(
@@ -1670,7 +1704,10 @@ class MainActivity : ComponentActivity() {
                         horizontalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
                         Button(
-                            onClick = { running = !running },
+                            onClick = { 
+                                running = !running 
+                                onToggleAmbient()
+                            },
                             modifier = Modifier.weight(1f).height(54.dp),
                             colors = ButtonDefaults.buttonColors(containerColor = soft),
                             shape = RoundedCornerShape(20.dp)
@@ -1679,7 +1716,10 @@ class MainActivity : ComponentActivity() {
                         }
                         
                         Button(
-                            onClick = { running = false; remainingSeconds = 0; totalSeconds = 0 },
+                            onClick = { 
+                                running = false; remainingSeconds = 0; totalSeconds = 0 
+                                if (isAmbientPlaying) onToggleAmbient()
+                            },
                             modifier = Modifier.weight(1f).height(54.dp),
                             colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
                             shape = RoundedCornerShape(20.dp),
