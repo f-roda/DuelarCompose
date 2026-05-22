@@ -2320,6 +2320,7 @@ class MainActivity : ComponentActivity() {
             estimateIntensity(text, patternScore)
         }
 
+        val avgIntensity = intensities.average().toInt().coerceIn(1, 10)
         val firstHalf = intensities.take((intensities.size / 2).coerceAtLeast(1)).average()
         val secondHalf = intensities.takeLast((intensities.size / 2).coerceAtLeast(1)).average()
 
@@ -2329,23 +2330,162 @@ class MainActivity : ComponentActivity() {
             else -> "La intensidad parece mantenerse relativamente estable."
         }
 
-        val guidance = when (mainPattern.key) {
-            "culpa" -> "Hoy puede ayudarte bajar el juicio interno. Mirar con honestidad no significa castigarte."
-            "tristeza" -> "Hoy no necesitás salir rápido de la tristeza. Solo darle un lugar cuidado para que no ocupe todo."
-            "rabia" -> "Hoy puede servirte descargar sin lastimarte ni lastimar. Respirar antes de actuar ya es una forma de cuidado."
-            "ansiedad" -> "Hoy conviene volver al cuerpo y a una sola acción concreta. No intentes ordenar toda tu vida en un día."
-            "shock" -> "Hoy no fuerces claridad. Volvé a lo básico: respirar, comer algo, descansar y sentirte a salvo."
-            "soledad" -> "Hoy podría ayudarte acercarte a alguien seguro, aunque sea con una frase simple."
-            "agotamiento" -> "Hoy avanzar puede significar hacer menos. Cuidar lo básico también es parte del proceso."
-            "aceptacion" -> "Si aparece algo de calma, no la rechaces por culpa. También forma parte del duelo."
-            "esperanza" -> "Cuidá esa pequeña señal de vida sin apurarla. Un paso posible alcanza."
-            else -> mainPattern.suggestion
-        }
+        val (dynamicMessage, dynamicSuggestion) = getDetailedInsight(mainPattern.key, avgIntensity)
 
         return TodaySignal(
             title = "Señal de hoy",
-            body = "En tus últimos registros aparece con más fuerza ${mainPattern.title.lowercase()}. $trendText $guidance"
+            body = "En tus últimos registros aparece con más fuerza ${mainPattern.title.lowercase()}. $trendText $dynamicMessage $dynamicSuggestion"
         )
+    }
+
+    private fun getDetailedInsight(key: String, intensity: Int): Pair<String, String> {
+        val i = intensity.coerceIn(1, 10)
+        return when (key) {
+            "shock" -> when (i) {
+                1 -> "Aparece una leve sensación de irrealidad, como si estuvieras viendo una película." to "Solo observalo sin intentar forzar una conexión mayor."
+                2 -> "Te sentís un poco distraído o desconectado de lo que pasa alrededor." to "Hacé algo que te devuelva al cuerpo, como lavarte la cara con agua fría."
+                3 -> "A ratos parece que lo ocurrido no fuera del todo cierto." to "Nombrá tres cosas reales que veas ahora mismo."
+                4 -> "La sensación de estar 'en automático' se vuelve más frecuente." to "No te exijas decisiones importantes hoy. Mantené la rutina simple."
+                5 -> "Hay un bloqueo claro que te impide sentir la magnitud de lo pasado." to "Tu sistema te está protegiendo. No lo fuerces, dale tiempo."
+                6 -> "Cuesta mucho concentrarse; el mundo se siente extraño y lejano." to "Buscá un lugar seguro y quedate ahí unos minutos en silencio."
+                7 -> "La confusión es constante. No terminás de entender dónde estás parado." to "Hacé una lista muy corta de lo único que tenés que hacer hoy."
+                8 -> "Un embotamiento profundo. Las emociones parecen estar tras un muro." to "Solo respirá. No intentes 'sentir' nada por obligación."
+                9 -> "Desorientación fuerte. La realidad se siente totalmente ajena." to "Buscá a alguien que te hable con calma y te ayude a anclarte."
+                10 -> "Shock total. El bloqueo es tan grande que parece que nada fuera real." to "No estás solo. Si la irrealidad te asusta, buscá apoyo profesional de inmediato."
+                else -> "" to ""
+            }
+            "culpa" -> when (i) {
+                1 -> "Un pequeño 'y si...' aparece en tus pensamientos de forma aislada." to "Reconocé que es un pensamiento, no una verdad absoluta."
+                2 -> "Te cuestionás una decisión pequeña que tomaste recientemente." to "Recordá que decidiste con lo que sabías en ese momento."
+                3 -> "Aparece un reproche suave por algo que sentís que faltó." to "Tratate con la misma compasión que tratarías a un amigo."
+                4 -> "La mente vuelve al pasado buscando errores para corregir." to "Escribí ese reproche y al lado poné una frase de perdón."
+                5 -> "Sentís el peso de una responsabilidad que quizá no te corresponde." to "Diferenciá entre lo que podías controlar y lo que no."
+                6 -> "El juicio interno se vuelve más severo y punzante." to "Buscá un momento para respirar y soltar la tensión del pecho."
+                7 -> "Te castigás mentalmente de forma repetitiva por lo ocurrido." to "La culpa no repara el pasado, solo daña tu presente. Elegí cuidarte hoy."
+                8 -> "Un sentimiento de fallo personal que te nubla el ánimo." to "Hablalo con alguien. A veces el juicio externo es mucho más tierno que el propio."
+                9 -> "La culpa es constante y parece una carga imposible de llevar." to "No sos tus errores. Permitite un momento de tregua hoy."
+                10 -> "Un autorreproche devastador que te hace sentir que todo fue tu culpa." to "Buscá ayuda para procesar este peso. No tenés que cargar este juicio solo."
+                else -> "" to ""
+            }
+            "autoexigencia" -> when (i) {
+                1 -> "Aparece un leve deseo de 'estar mejor' más rápido." to "Recordá que el duelo no tiene cronómetro."
+                2 -> "Te comparás un poco con cómo creés que 'deberías' estar." to "Cada proceso es único. El tuyo también."
+                3 -> "Sentís la presión de cumplir con todas tus tareas sin fallar." to "Elegí una tarea para dejarla para mañana sin culpa."
+                4 -> "El 'tengo que poder' empieza a sonar fuerte en tu cabeza." to "Buscá una forma de simplificar una sola acción hoy."
+                5 -> "Te cuesta permitirte un momento de vulnerabilidad frente a otros." to "Permitite decir 'hoy no puedo' al menos una vez."
+                6 -> "La autoexigencia te agota más que el propio dolor." to "Bajá el estándar del día. El 50% hoy es un 100%."
+                7 -> "Sentís que si aflojás, todo se va a desmoronar." to "Confía en que podés descansar y el mundo va a seguir ahí."
+                8 -> "Una presión constante por ser fuerte y no mostrar debilidad." to "Llorar o cansarse no es debilidad, es ser humano."
+                9 -> "Te exigís funcionar al máximo cuando el cuerpo pide frenar." to "Hacé un pacto con vos mismo: hoy lo mínimo es suficiente."
+                10 -> "Un perfeccionismo paralizante en medio del dolor." to "Soltá el control por hoy. Dejate sostener por la rutina básica."
+                else -> "" to ""
+            }
+            "tristeza" -> when (i) {
+                1 -> "Una melancolía suave, como un día nublado pero tranquilo." to "Disfrutá la calma de este momento."
+                2 -> "Un cansancio afectivo que pide un poco de retiro." to "Tomate un té o café en silencio, sin pantallas."
+                3 -> "La ausencia se nota, pero podés habitar el día." to "Mirá una foto o recordá algo lindo sin apuro."
+                4 -> "La pena se siente más presente en el cuerpo, como un peso." to "Date permiso para estar un poco más lento hoy."
+                5 -> "Un nudo en el pecho que aparece con más frecuencia." to "Poné en palabras lo que te duele en un papel."
+                6 -> "El vacío se vuelve más difícil de ignorar." to "Buscá compañía o un refugio que te dé paz."
+                7 -> "Cuesta encontrar energía para las tareas más simples." to "No fuerces la alegría. La tristeza también necesita ser mirada."
+                8 -> "Una pena densa que parece teñir todo lo que hacés." to "Llorá si lo necesitás. El llanto es un lenguaje necesario."
+                9 -> "Un dolor profundo que te quita las fuerzas para lo básico." to "Pedí que alguien te cocine o te acompañe en silencio."
+                10 -> "Un desborde total. El dolor es tan grande que nubla el futuro." to "No atravieses esto solo. Buscá apoyo profesional o un abrazo seguro."
+                else -> "" to ""
+            }
+            "rabia" -> when (i) {
+                1 -> "Una leve irritabilidad ante cosas pequeñas." to "Respirá hondo antes de responder a algo molesto."
+                2 -> "Te molesta que el mundo siga girando como si nada." to "Reconocé que tu ritmo hoy es distinto al de los demás."
+                3 -> "Aparece un pensamiento de injusticia por lo pasado." to "Escribí por qué se siente injusto para sacarlo de la mente."
+                4 -> "Sentís tensión en la mandíbula o en las manos." to "Hacé un poco de ejercicio físico para descargar la energía."
+                5 -> "El enojo empieza a buscar culpables, incluso en vos mismo." to "No tomes el enojo como una verdad, sino como una señal de dolor."
+                6 -> "Sentís ganas de gritar o romper con la rutina." to "Gritá en una almohada o escribí una carta llena de furia."
+                7 -> "La bronca es constante y te cuesta tratar bien a los demás." to "Tomate un tiempo a solas para no lastimar a quien querés."
+                8 -> "Un sentimiento de furia por la injusticia de la pérdida." to "Reconocé que la rabia es tristeza que no encuentra salida."
+                9 -> "La rabia es tan fuerte que te dan ganas de romper algo." to "Buscá una forma segura de descargar: rompé papeles o caminá rápido."
+                10 -> "Un odio o resentimiento profundo que te consume." to "Buscá ayuda para canalizar este fuego antes de que te queme por dentro."
+                else -> "" to ""
+            }
+            "ansiedad" -> when (i) {
+                1 -> "Una leve inquietud, como si olvidaras algo." to "Hacé una lista de lo que tenés que hacer hoy."
+                2 -> "Te cuesta un poco quedarte quieto en un solo lugar." to "Caminá unos minutos por la casa o el barrio."
+                3 -> "Aparecen dudas sobre cómo vas a seguir adelante." to "Concentrate solo en las próximas dos horas."
+                4 -> "Sentís que el corazón late un poco más rápido a ratos." to "Hacé tres respiraciones conscientes ahora mismo."
+                5 -> "Te preocupa el futuro y te sentís vulnerable." to "Volvé al presente: tocá algo frío o sentí tus pies en el suelo."
+                6 -> "La mente no para de proyectar escenarios difíciles." to "Escribí tus miedos para que dejen de dar vueltas en tu cabeza."
+                7 -> "Sentís opresión en el pecho o falta de aire." to "Hacé un ejercicio de respiración guiado (tenés uno en el día)."
+                8 -> "Un estado de alerta constante, como si algo malo fuera a pasar." to "Bajá los estímulos: apagá la tele y el celular por un rato."
+                9 -> "Pánico o desborde inminente. Te sentís atrapado." to "Llamá a alguien que te dé seguridad y te ayude a calmarte."
+                10 -> "Ansiedad paralizante. El miedo ocupa todo el espacio." to "Buscá ayuda médica o profesional si sentís que perdés el control."
+                else -> "" to ""
+            }
+            "soledad" -> when (i) {
+                1 -> "Un pensamiento pasajero de que nadie entiende del todo." to "Recordá que tu proceso es tuyo, pero no tenés que estar solo."
+                2 -> "Extrañás una charla simple con alguien que ya no está." to "Hablale en voz alta, aunque parezca raro, ayuda a soltar."
+                3 -> "Sentís que hay un muro entre vos y los demás." to "Mandá un mensaje corto a alguien que te quiera."
+                4 -> "El silencio de la casa o el entorno se vuelve pesado." to "Poné música suave o un podcast para acompañar el ambiente."
+                5 -> "Te sentís solo incluso cuando estás rodeado de gente." to "No fuerces la conexión, pero permitite estar presente."
+                6 -> "Aparece la idea de que a nadie le importa realmente tu dolor." to "Es la tristeza hablando. Alguien está pensando en vos hoy."
+                7 -> "Un aislamiento buscado pero que empieza a doler." to "Abrí la ventana o salí a ver gente, aunque no hables con nadie."
+                8 -> "Sentís que sos el único en el mundo con este dolor." to "Buscá grupos o testimonios de otros que pasaron por lo mismo."
+                9 -> "Un vacío de compañía que se siente insoportable." to "Llamá a una línea de apoyo o a un amigo muy cercano ya mismo."
+                10 -> "Soledad absoluta y desoladora. Sentís abandono total." to "Buscá refugio en un profesional o en un grupo de contención."
+                else -> "" to ""
+            }
+            "agotamiento" -> when (i) {
+                1 -> "Un poco más de sueño que lo habitual." to "Andate a dormir 15 minutos antes hoy."
+                2 -> "Sentís que las piernas pesan un poco al caminar." to "Hacé movimientos suaves de estiramiento."
+                3 -> "Te cuesta concentrarte en una lectura larga." to "Leé textos cortos o escuchá audios breves."
+                4 -> "El cuerpo pide siesta o descanso a media tarde." to "Si podés, dormí 20 minutos. El cuerpo está procesando mucho."
+                5 -> "Hacer lo básico (bañarse, cocinar) requiere esfuerzo." to "Pedí comida o hacé algo muy simple que no requiera energía."
+                6 -> "Sentís un cansancio mental que no se va con dormir." to "Evitá las pantallas y buscá luz natural un rato."
+                7 -> "Te sentís agotado emocionalmente, sin ganas de hablar." to "Respetá tu necesidad de silencio. No tenés que explicarte."
+                8 -> "Un cansancio que llega hasta los huesos. Todo pesa." to "No te exijas nada hoy. Solo existí y cuidate."
+                9 -> "Agotamiento extremo. Sentís que no podés ni pensar." to "Dejá todo lo que no sea vital para otro momento."
+                10 -> "Colapso físico y mental por el peso del duelo." to "Descansá de verdad. Tu salud es lo primero ahora."
+                else -> "" to ""
+            }
+            "apego" -> when (i) {
+                1 -> "Un recuerdo que viene y se va con suavidad." to "Agradecé ese momento que viviste."
+                2 -> "Mirás un objeto y te quedás pensando unos segundos." to "Sonreíle al recuerdo, es parte de tu tesoro."
+                3 -> "Deseás que las cosas fueran como hace un tiempo." to "Aceptá que el pasado fue hermoso, pero el hoy es lo que tenés."
+                4 -> "Te cuesta desprenderte de algo que ya no sirve." to "No te apures. Soltá cuando sientas que tenés dónde apoyarte."
+                5 -> "Sentís que si olvidás un detalle, perdés a la persona." to "El vínculo está en tu corazón, no solo en los datos."
+                6 -> "El pasado parece mucho más real y brillante que el presente." to "Traé un valor de ese pasado a una acción de hoy."
+                7 -> "Te aferrás a rutinas que ya no tienen sentido." to "Probá cambiar una sola cosa pequeña de tu lugar."
+                8 -> "Un deseo desesperado de que el tiempo vuelva atrás." to "Respirá y sentí tus pies en el suelo. Estás acá ahora."
+                9 -> "Sentís que no podés vivir sin lo que perdiste." to "Buscá ayuda para encontrar nuevas formas de sostenerte."
+                10 -> "Apego total que te impide ver cualquier futuro." to "El pasado no se va, se transforma. Trabajalo con un profesional."
+                else -> "" to ""
+            }
+            "aceptacion" -> when (i) {
+                1 -> "Un momento fugaz de paz mientras hacés algo cotidiano." to "Atesorá esa calma, es una semilla de lo que viene."
+                2 -> "Podés hablar de lo pasado sin que se te quiebre la voz." to "Reconocé el camino recorrido hasta este punto."
+                3 -> "Empezás a imaginar cambios positivos en tu rutina." to "Hacé un plan pequeño para la semana que viene."
+                4 -> "Sentís que el dolor ya no es el protagonista de cada hora." to "Permitite disfrutar de algo nuevo sin sentir culpa."
+                5 -> "Entendés que lo pasado es parte de tu historia, no todo el libro." to "Escribí lo que aprendiste de este proceso."
+                6 -> "Aparece una curiosidad renovada por la vida." to "Inscribite en algo o empezá un hobby pequeño."
+                7 -> "Sentís que podés ayudar a otros con tu experiencia." to "Escuchá a alguien que esté sufriendo, tu presencia vale."
+                8 -> "La aceptación se siente como un suelo firme donde pararse." to "Agradecé tu fortaleza para transitar el desierto."
+                9 -> "Mirás el futuro con una claridad que antes no tenías." to "Empezá a construir ese nuevo proyecto que soñaste."
+                10 -> "Paz profunda e integración total de la pérdida." to "Celebrá la vida. Honrar lo perdido es vivir plenamente."
+                else -> "" to ""
+            }
+            "esperanza" -> when (i) {
+                1 -> "Una pequeña idea de que 'esto también pasará'." to "Mantené ese pensamiento cerca hoy."
+                2 -> "Vés una luz en el camino, aunque sea lejana." to "Caminá hacia ella, un paso a la vez."
+                3 -> "Sentís que tenés recursos para salir adelante." to "Hacé una lista de tus fortalezas."
+                4 -> "Aparece un proyecto que te entusiasma mínimamente." to "Dales una oportunidad a tus nuevas ideas."
+                5 -> "Creés que la vida todavía tiene cosas buenas para vos." to "Abrite a recibir una sorpresa agradable hoy."
+                6 -> "La esperanza se convierte en una acción concreta." to "Invertí tiempo en algo que te haga bien a largo plazo."
+                7 -> "Sentís que el dolor te transformó para mejor." to "Honrá tu transformación con un gesto de bondad."
+                8 -> "Vibrás con una energía de reconstrucción y vida." to "Compartí tu esperanza con los que te rodean."
+                9 -> "El futuro se ve lleno de posibilidades nuevas." to "No tengas miedo de soñar en grande otra vez."
+                10 -> "Plena confianza en el flujo de la vida y tu lugar en ella." to "Viví con intensidad y gratitud cada minuto."
+                else -> "" to ""
+            }
+            else -> "Seguí explorando tu proceso con paciencia." to "Cada día es una oportunidad para conocerte mejor."
+        }
     }
 
     private fun buildJournalInsight(prefs: android.content.SharedPreferences): JournalInsight {
@@ -2379,30 +2519,39 @@ class MainActivity : ComponentActivity() {
             )
         }
 
+        val intensities = entries.map { (_, text) ->
+            val patternScore = scorePatterns(text).maxOfOrNull { it.score } ?: 0
+            estimateIntensity(text, patternScore)
+        }
+        val avgIntensity = intensities.average().toInt().coerceIn(1, 10)
+
         val first = patterns[0]
+        val (firstMessage, firstSuggestion) = getDetailedInsight(first.key, avgIntensity)
         val second = patterns.getOrNull(1)
 
         return JournalInsight(
-            mainText = "Al leer lo que venís escribiendo, aparece con más fuerza ${first.title.lowercase()}. ${first.message}",
-            secondaryText = second?.let {
-                "También se asoma ${it.title.lowercase()}. ${it.message}"
+            mainText = "Al leer lo que venís escribiendo, aparece con más fuerza ${first.title.lowercase()}. $firstMessage",
+            secondaryText = second?.let { s ->
+                val (sMessage, _) = getDetailedInsight(s.key, avgIntensity)
+                "También se asoma ${s.title.lowercase()}. $sMessage"
             }.orEmpty(),
             evolutionText = buildEvolutionText(entries),
-            suggestionText = buildSuggestionTextForProgress(prefs, first)
+            suggestionText = buildSuggestionTextForProgress(prefs, first, firstSuggestion)
         )
     }
 
     private fun buildSuggestionTextForProgress(
         prefs: android.content.SharedPreferences,
-        pattern: InsightPattern
+        pattern: InsightPattern,
+        dynamicSuggestion: String
     ): String {
         val suggestedDays = findRelevantCompletedDays(prefs, pattern)
 
         return if (suggestedDays.isNotEmpty()) {
             val daysText = suggestedDays.joinToString(", ")
-            "${pattern.suggestion} También podría ayudarte volver a revisar ${if (suggestedDays.size == 1) "el día" else "los días"} $daysText, porque ahí ya trabajaste algo relacionado con esto."
+            "$dynamicSuggestion También podría ayudarte volver a revisar ${if (suggestedDays.size == 1) "el día" else "los días"} $daysText, porque ahí ya trabajaste algo relacionado con esto."
         } else {
-            "${pattern.suggestion} Por ahora no hace falta volver a días anteriores. Seguí con el día actual y observá si esta emoción vuelve a aparecer."
+            "$dynamicSuggestion Por ahora no hace falta volver a días anteriores. Seguí con el día actual y observá si esta emoción vuelve a aparecer."
         }
     }
 
