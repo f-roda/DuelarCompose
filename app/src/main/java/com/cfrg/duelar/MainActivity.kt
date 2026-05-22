@@ -2787,8 +2787,8 @@ class MainActivity : ComponentActivity() {
                 key = "shock",
                 title = "shock y bloqueo",
                 score = score(
-                    words = listOf("shock", "bloqueo", "bloqueado", "bloqueada", "irreal", "automatico", "automático", "confuso", "confundido", "desconectado"),
-                    phrases = listOf("no lo puedo creer", "no puede ser", "me siento en automatico", "me siento en automático", "como si no fuera real", "no termino de entender")
+                    words = listOf("shock", "bloqueo", "bloqueado", "bloqueada", "irreal", "automatico", "automático", "confuso", "confundido", "desconectado", "mentira", "negación", "nublado", "aturdido", "extrañeza", "desrealización", "paralizado", "anestesiado", "irrealidad"),
+                    phrases = listOf("no lo puedo creer", "no puede ser", "me siento en automatico", "me siento en automático", "como si no fuera real", "no termino de entender", "no me cae la ficha", "parece un sueño", "estoy como en una burbuja", "no siento nada", "estoy congelado", "parece que no paso")
                 ),
                 days = "1, 2 y 3",
                 message = "Aparecen señales de bloqueo o irrealidad. Tu sistema puede estar intentando procesar algo que todavía se siente demasiado.",
@@ -2798,8 +2798,8 @@ class MainActivity : ComponentActivity() {
                 key = "culpa",
                 title = "culpa y reproche personal",
                 score = score(
-                    words = listOf("culpa", "culpable", "falle", "fallé", "error", "perdon", "perdón", "arrepiento", "responsable"),
-                    phrases = listOf("si hubiera", "deberia haber", "debería haber", "tendria que haber", "tendría que haber", "fue mi culpa", "no hice suficiente", "pude haber")
+                    words = listOf("culpa", "culpable", "falle", "fallé", "error", "perdon", "perdón", "arrepiento", "responsable", "hubiera", "podría", "debería", "negligencia", "castigo", "remordimiento", "traición", "fallar", "deuda", "maldad"),
+                    phrases = listOf("si hubiera", "deberia haber", "debería haber", "tendria que haber", "tendría que haber", "fue mi culpa", "no hice suficiente", "pude haber", "si tan solo", "me odio por", "no me perdono", "tendría que haber estado ahí", "le falle", "es mi responsabilidad")
                 ),
                 days = "7, 17 y 22",
                 message = "Hay frases que vuelven al pasado buscando una forma de corregirlo o castigarte por lo que no pudiste hacer.",
@@ -2809,8 +2809,8 @@ class MainActivity : ComponentActivity() {
                 key = "autoexigencia",
                 title = "autoexigencia",
                 score = score(
-                    words = listOf("deberia", "debería", "tengo", "obligacion", "obligación", "perfecto", "fuerte", "exijo", "exigirme", "cumplir"),
-                    phrases = listOf("tengo que poder", "deberia estar mejor", "debería estar mejor", "no puedo aflojar", "tengo que ser fuerte", "no deberia sentir")
+                    words = listOf("deberia", "debería", "tengo", "obligacion", "obligación", "perfecto", "fuerte", "exijo", "exigirme", "cumplir", "aguantar", "impecable", "productivo", "responsabilidad", "obligado", "presión", "sostener", "rendir"),
+                    phrases = listOf("tengo que poder", "deberia estar mejor", "debería estar mejor", "no puedo aflojar", "tengo que ser fuerte", "no deberia sentir", "no puedo permitirme llorar", "tengo que seguir adelante", "los demás dependen de mí", "no quiero ser una carga", "tengo que funcionar")
                 ),
                 days = "2, 18 y 22",
                 message = "Se nota una presión por estar mejor, funcionar o sostener una versión de fortaleza que quizá hoy pesa demasiado.",
@@ -2820,8 +2820,8 @@ class MainActivity : ComponentActivity() {
                 key = "tristeza",
                 title = "tristeza profunda",
                 score = score(
-                    words = listOf("triste", "tristeza", "lloro", "llorar", "vacio", "vacío", "dolor", "duele", "extraño", "extrañar", "ausencia", "pena"),
-                    phrases = listOf("no tengo ganas", "me siento vacio", "me siento vacío", "me duele mucho", "no puedo parar de llorar", "me pesa todo")
+                    words = listOf("triste", "tristeza", "lloro", "llorar", "vacio", "vacío", "dolor", "duele", "extraño", "extrañar", "ausencia", "pena", "angustia", "desolación", "quebrado", "infinito", "oscuro", "apagado", "derrotado", "melancolía", "llanto", "dessuelo", "abatido"),
+                    phrases = listOf("no tengo ganas", "me siento vacio", "me siento vacío", "me duele mucho", "no puedo parar de llorar", "me pesa todo", "me falta el aire", "un agujero en el pecho", "ganas de llorar todo el día", "no encuentro consuelo", "tengo el corazon roto", "no puedo dejar de llorar")
                 ),
                 days = "10, 14 y 24",
                 message = "Aparece una sensación de peso emocional, ausencia o cansancio afectivo que pide espacio, no apuro.",
@@ -2831,8 +2831,8 @@ class MainActivity : ComponentActivity() {
                 key = "rabia",
                 title = "rabia e injusticia",
                 score = score(
-                    words = listOf("enojo", "enojado", "rabia", "bronca", "injusto", "injusticia", "odio", "molesta", "molesto", "furia"),
-                    phrases = listOf("no es justo", "me da bronca", "me da rabia", "no deberia haber pasado", "no debería haber pasado")
+                    words = listOf("enojo", "enojado", "rabia", "bronca", "injusto", "injusticia", "odio", "molesta", "molesto", "furia", "ira", "indignación", "rabioso", "violento", "rebelde", "cruel", "maldito", "resentimiento", "asco", "quemar"),
+                    phrases = listOf("no es justo", "me da bronca", "me da rabia", "no deberia haber pasado", "no debería haber pasado", "por qué a mí", "estoy harto", "no lo soporto", "maldita sea", "ganas de romper todo", "me indigna")
                 ),
                 days = "5, 6 y 13",
                 message = "El enojo parece estar señalando algo que vivís como injusto, no dicho o difícil de aceptar.",
@@ -2842,8 +2842,8 @@ class MainActivity : ComponentActivity() {
                 key = "ansiedad",
                 title = "ansiedad y desborde",
                 score = score(
-                    words = listOf("miedo", "angustia", "ansiedad", "ansioso", "nervioso", "temor", "panico", "pánico", "desbordado", "desborde"),
-                    phrases = listOf("no puedo con esto", "no puedo mas", "no puedo más", "me supera", "me siento desbordado", "me cuesta respirar")
+                    words = listOf("miedo", "angustia", "ansiedad", "ansioso", "nervioso", "temor", "panico", "pánico", "desbordado", "desborde", "inquietud", "asustado", "intranquilo", "acelerado", "asfixia", "palpitaciones", "incertidumbre", "terror", "angustiado"),
+                    phrases = listOf("no puedo con esto", "no puedo mas", "no puedo más", "me supera", "me siento desbordado", "me cuesta respirar", "siento que me falta el aire", "no puedo parar de pensar", "qué va a pasar ahora", "tengo miedo de", "no puedo estar quieto", "me va a dar algo")
                 ),
                 days = "3, 11 y 21",
                 message = "Hay señales de tensión, anticipación o sensación de no poder sostener todo al mismo tiempo.",
@@ -2853,8 +2853,8 @@ class MainActivity : ComponentActivity() {
                 key = "soledad",
                 title = "soledad y necesidad de sostén",
                 score = score(
-                    words = listOf("solo", "sola", "soledad", "aislado", "aislada", "nadie", "acompañe", "compania", "compañía", "abandonado"),
-                    phrases = listOf("me siento solo", "me siento sola", "no tengo a nadie", "nadie entiende", "no quiero molestar")
+                    words = listOf("solo", "sola", "soledad", "aislado", "aislada", "nadie", "acompañe", "compania", "compañía", "abandonado", "aislamiento", "desamparo", "olvidado", "incomprendido", "abandonada", "desolado", "invisible", "vacío", "vacía"),
+                    phrases = listOf("me siento solo", "me siento sola", "no tengo a nadie", "nadie entiende", "no quiero molestar", "me siento invisible", "estoy solo en esto", "necesito un abrazo", "me falta alguien", "nadie se da cuenta")
                 ),
                 days = "9, 20 y 23",
                 message = "Aparece una necesidad de compañía o de ser comprendido sin tener que explicar demasiado.",
@@ -2864,8 +2864,8 @@ class MainActivity : ComponentActivity() {
                 key = "agotamiento",
                 title = "agotamiento emocional",
                 score = score(
-                    words = listOf("cansado", "cansada", "agotado", "agotada", "pesado", "pesada", "energia", "energía", "dormir", "sueño"),
-                    phrases = listOf("no tengo energia", "no tengo energía", "me pesa todo", "estoy agotado", "estoy agotada", "solo quiero dormir")
+                    words = listOf("cansado", "cansada", "agotado", "agotada", "pesado", "pesada", "energia", "energía", "dormir", "sueño", "quemado", "fundido", "desganado", "lento", "desgano", "pesadez", "fatiga", "debilitado"),
+                    phrases = listOf("no tengo energia", "no tengo energía", "me pesa todo", "estoy agotado", "estoy agotada", "solo quiero dormir", "no doy más", "necesito dormir mil años", "cada paso me cuesta", "estoy agotado mentalmente", "no tengo fuerzas para nada")
                 ),
                 days = "4, 11 y 24",
                 message = "Se siente mucho desgaste. El cuerpo parece estar pidiendo menos exigencia y más reparación.",
@@ -2875,8 +2875,8 @@ class MainActivity : ComponentActivity() {
                 key = "apego",
                 title = "apego a lo perdido",
                 score = score(
-                    words = listOf("volver", "recuperar", "antes", "extraño", "aferrar", "aferrarme", "soltar", "perder", "pasado"),
-                    phrases = listOf("quiero que vuelva", "como antes", "no puedo soltar", "me aferro", "volver atras", "volver atrás")
+                    words = listOf("volver", "recuperar", "antes", "extraño", "aferrar", "aferrarme", "soltar", "perder", "pasado", "necesito", "vuelve", "sujetar", "atrapado", "preso", "imposible", "memoria", "vínculo", "dependencia", "atadura"),
+                    phrases = listOf("quiero que vuelva", "como antes", "no puedo soltar", "me aferro", "volver atras", "volver atrás", "no quiero que cambie", "me aferro a lo que fue", "no puedo imaginar la vida sin", "sigo esperando que llegue", "necesito que este aca")
                 ),
                 days = "14, 25 y 27",
                 message = "Hay una parte de vos que todavía intenta sostener la forma anterior de lo que se perdió.",
@@ -2886,8 +2886,8 @@ class MainActivity : ComponentActivity() {
                 key = "aceptacion",
                 title = "aceptación en proceso",
                 score = score(
-                    words = listOf("acepto", "aceptar", "entiendo", "comprendo", "proceso", "calma", "paz", "aprendo", "seguir", "continuar"),
-                    phrases = listOf("de a poco", "puedo seguir", "empiezo a aceptar", "me siento mas tranquilo", "me siento más tranquilo")
+                    words = listOf("acepto", "aceptar", "entiendo", "comprendo", "proceso", "calma", "paz", "aprendo", "seguir", "continuar", "entendiendo", "fluyendo", "integrando", "paciencia", "aprendizaje", "alivio", "transitar", "sanar", "asumir"),
+                    phrases = listOf("de a poco", "puedo seguir", "empiezo a aceptar", "me siento mas tranquilo", "me siento más tranquilo", "un día a la vez", "puedo convivir con esto", "el dolor es distinto ahora", "empiezo a ver un poco de luz", "va pasando", "entiendo que paso")
                 ),
                 days = "21, 28 y 30",
                 message = "Empiezan a aparecer palabras de integración, calma o posibilidad. Eso no borra el dolor, pero muestra movimiento.",
@@ -2897,8 +2897,8 @@ class MainActivity : ComponentActivity() {
                 key = "esperanza",
                 title = "esperanza y reconstrucción",
                 score = score(
-                    words = listOf("esperanza", "mejor", "avanzar", "futuro", "posible", "camino", "vida", "reconstruir", "quiero"),
-                    phrases = listOf("quiero estar mejor", "puedo avanzar", "hay algo posible", "quiero seguir", "un paso mas", "un paso más")
+                    words = listOf("esperanza", "mejor", "avanzar", "futuro", "posible", "camino", "vida", "reconstruir", "quiero", "proyectar", "luz", "posibilidad", "creer", "nuevo", "mañana", "fuerza", "oportunidad", "confianza", "horizonte"),
+                    phrases = listOf("quiero estar mejor", "puedo avanzar", "hay algo posible", "quiero seguir", "un paso mas", "un paso más", "creo que voy a estar bien", "tengo ganas de empezar algo", "veo una salida", "vuelvo a sonreír", "tengo un proyecto")
                 ),
                 days = "15, 19 y 28",
                 message = "Se asoman señales de reconstrucción. No son negación del dolor, son pequeñas partes tuyas buscando vida.",
