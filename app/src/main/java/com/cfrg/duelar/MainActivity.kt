@@ -1487,70 +1487,181 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     private fun MeditationTimerCard() {
+        var totalSeconds by remember { mutableIntStateOf(0) }
         var remainingSeconds by remember { mutableIntStateOf(0) }
         var running by remember { mutableStateOf(false) }
-        val breathing = rememberInfiniteTransition(label = "breathing")
-        val breathScale by breathing.animateFloat(
-            initialValue = 0.85f,
-            targetValue = 1.15f,
+
+        val infiniteTransition = rememberInfiniteTransition(label = "breathing")
+        val cycleProgress by infiniteTransition.animateFloat(
+            initialValue = 0f,
+            targetValue = 1f,
             animationSpec = infiniteRepeatable(
-                animation = tween(4000),
-                repeatMode = RepeatMode.Reverse
+                animation = tween(12000, easing = LinearEasing),
+                repeatMode = RepeatMode.Restart
             ),
-            label = "breathScale"
+            label = "cycleProgress"
         )
+
+        val (breathStage, breathScale, breathAlpha) = if (running) {
+            when {
+                cycleProgress < 0.33f -> {
+                    val p = cycleProgress / 0.33f
+                    Triple("Inhalá", 0.85f + (p * 0.3f), 0.4f + (p * 0.4f))
+                }
+                cycleProgress < 0.66f -> {
+                    val p = (cycleProgress - 0.33f) / 0.33f
+                    Triple("Exhalá", 1.15f - (p * 0.3f), 0.8f - (p * 0.4f))
+                }
+                else -> Triple("Pausa", 0.85f, 0.4f)
+            }
+        } else {
+            Triple("Respirá", 1f, 0.5f)
+        }
 
         LaunchedEffect(running, remainingSeconds) {
             if (running && remainingSeconds > 0) {
                 delay(1000)
                 remainingSeconds -= 1
             }
-            if (remainingSeconds <= 0) running = false
+            if (remainingSeconds <= 0 && totalSeconds > 0) {
+                running = false
+                totalSeconds = 0
+            }
         }
 
         Card(
-            colors = CardDefaults.cardColors(containerColor = card.copy(alpha = 0.92f)),
-            shape = RoundedCornerShape(30.dp),
-            elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
-            modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
+            colors = CardDefaults.cardColors(containerColor = card.copy(alpha = 0.95f)),
+            shape = RoundedCornerShape(32.dp),
+            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+            modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp)
         ) {
-            Column(Modifier.padding(22.dp)) {
-                Text("Pausa guiada de respiración", color = ink, fontSize = 19.sp, fontWeight = FontWeight.Bold)
-                Spacer(Modifier.height(8.dp))
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(180.dp),
-                    contentAlignment = Alignment.Center
-                ) {
+            Column(
+                Modifier.padding(24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text("Pausa de respiración", color = ink, fontSize = 20.sp, fontWeight = FontWeight.ExtraBold)
+                Spacer(Modifier.height(4.dp))
+                Text(
+                    "Seguí el ritmo del círculo para volver a tu centro.",
+                    color = muted,
+                    fontSize = 14.sp,
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                )
+
+                Spacer(Modifier.height(36.dp))
+
+                Box(modifier = Modifier.size(220.dp), contentAlignment = Alignment.Center) {
+                    // Outer decorative rings
+                    Canvas(modifier = Modifier.fillMaxSize()) {
+                        val radius = size.minDimension / 2
+                        drawCircle(
+                            color = accent.copy(alpha = 0.05f),
+                            radius = radius,
+                            style = Fill
+                        )
+                        if (running) {
+                            drawCircle(
+                                color = accent.copy(alpha = 0.1f),
+                                radius = radius * breathScale,
+                                style = Stroke(width = 2.dp.toPx())
+                            )
+                        }
+                    }
+
+                    // Circular Progress
+                    if (running && totalSeconds > 0) {
+                        androidx.compose.material3.CircularProgressIndicator(
+                            progress = { remainingSeconds.toFloat() / totalSeconds },
+                            modifier = Modifier.fillMaxSize(),
+                            color = accent,
+                            strokeWidth = 4.dp,
+                            trackColor = soft.copy(alpha = 0.4f),
+                            strokeCap = androidx.compose.ui.graphics.StrokeCap.Round
+                        )
+                    }
+
+                    // Main breathing circle
                     Surface(
-                        color = accentSoft.copy(alpha = if (running) 0.8f else 0.45f),
+                        color = if (running) accent.copy(alpha = breathAlpha) else soft,
                         shape = RoundedCornerShape(200.dp),
                         modifier = Modifier
-                            .size(if (running) 130.dp else 110.dp)
+                            .size(140.dp)
                             .graphicsLayer {
-                                scaleX = if (running) breathScale else 1f
-                                scaleY = if (running) breathScale else 1f
+                                scaleX = breathScale
+                                scaleY = breathScale
                             }
-                    ) {}
+                    ) {
+                        Box(contentAlignment = Alignment.Center) {
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                Text(
+                                    breathStage,
+                                    color = if (running) Color.White else ink.copy(alpha = 0.6f),
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+                                if (running) {
+                                    Text(
+                                        "${remainingSeconds / 60}:${(remainingSeconds % 60).toString().padStart(2, '0')}",
+                                        color = Color.White,
+                                        fontSize = 22.sp,
+                                        fontWeight = FontWeight.ExtraBold
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
 
-                    Text(
-                        if (remainingSeconds > 0)
-                            "${remainingSeconds / 60}:${(remainingSeconds % 60).toString().padStart(2, '0')}"
-                        else
-                            "Respirá",
-                        color = ink,
-                        fontSize = 28.sp,
-                        fontWeight = FontWeight.Bold
-                    )
+                Spacer(Modifier.height(36.dp))
+
+                if (!running) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        TimerOption("1 min") { remainingSeconds = 60; totalSeconds = 60; running = true }
+                        TimerOption("3 min") { remainingSeconds = 180; totalSeconds = 180; running = true }
+                        TimerOption("5 min") { remainingSeconds = 300; totalSeconds = 300; running = true }
+                    }
+                } else {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        Button(
+                            onClick = { running = !running },
+                            modifier = Modifier.weight(1f).height(54.dp),
+                            colors = ButtonDefaults.buttonColors(containerColor = soft),
+                            shape = RoundedCornerShape(20.dp)
+                        ) {
+                            Text(if (running) "Pausar" else "Continuar", color = ink, fontWeight = FontWeight.SemiBold)
+                        }
+                        
+                        Button(
+                            onClick = { running = false; remainingSeconds = 0; totalSeconds = 0 },
+                            modifier = Modifier.weight(1f).height(54.dp),
+                            colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
+                            shape = RoundedCornerShape(20.dp),
+                            border = androidx.compose.foundation.BorderStroke(1.dp, soft)
+                        ) {
+                            Text("Detener", color = muted, fontWeight = FontWeight.SemiBold)
+                        }
+                    }
                 }
-                Spacer(Modifier.height(10.dp))
-                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Button(onClick = { remainingSeconds = 180; running = true }, modifier = Modifier.weight(1f), colors = ButtonDefaults.buttonColors(containerColor = accent)) { Text("3 min") }
-                    Button(onClick = { remainingSeconds = 300; running = true }, modifier = Modifier.weight(1f), colors = ButtonDefaults.buttonColors(containerColor = accent)) { Text("5 min") }
-                    Button(onClick = { remainingSeconds = 600; running = true }, modifier = Modifier.weight(1f), colors = ButtonDefaults.buttonColors(containerColor = accent)) { Text("10 min") }
-                }
-                if (remainingSeconds > 0) PrimaryButton(if (running) "Pausar temporizador" else "Continuar temporizador") { running = !running }
+            }
+        }
+    }
+
+    @Composable
+    private fun RowScope.TimerOption(label: String, onClick: () -> Unit) {
+        Surface(
+            onClick = onClick,
+            color = soft.copy(alpha = 0.7f),
+            shape = RoundedCornerShape(20.dp),
+            modifier = Modifier.height(52.dp).weight(1f)
+        ) {
+            Box(contentAlignment = Alignment.Center) {
+                Text(label, color = ink, fontSize = 15.sp, fontWeight = FontWeight.Bold)
             }
         }
     }
