@@ -1579,9 +1579,26 @@ class MainActivity : ComponentActivity() {
     private fun EmotionTimelineCard(prefs: android.content.SharedPreferences) {
         val days = buildEmotionDays(prefs)
         val withData = days.filter { it.hasData }
-        val latestSignal = withData.maxByOrNull { it.day }
-        val latestEmotion = latestSignal?.label ?: "Sin registros"
-        val latestIntensity = latestSignal?.intensity ?: 0
+        val recentSignals = withData.sortedBy { it.day }.takeLast(3)
+
+        val recentEmotionText = if (recentSignals.isNotEmpty()) {
+            recentSignals
+                .map { shortEmotionLabel(it.label) }
+                .distinct()
+                .joinToString(" · ")
+        } else {
+            "Sin registros"
+        }
+
+        val recentAverageIntensity = if (recentSignals.isNotEmpty()) {
+            recentSignals
+                .map { it.intensity }
+                .average()
+                .toInt()
+                .coerceIn(1, 10)
+        } else {
+            0
+        }
 
         Card(
             colors = CardDefaults.cardColors(containerColor = card.copy(alpha = 0.94f)),
@@ -1629,13 +1646,13 @@ class MainActivity : ComponentActivity() {
                     horizontalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     MiniMetric(
-                        title = "Última emoción",
-                        value = latestEmotion,
+                        title = "Últimas emociones",
+                        value = recentEmotionText,
                         modifier = Modifier.weight(1f)
                     )
                     MiniMetric(
-                        title = "Última intensidad",
-                        value = if (latestIntensity > 0) "$latestIntensity/10" else "—",
+                        title = "Intensidad promedio",
+                        value = if (recentAverageIntensity > 0) "$recentAverageIntensity/10" else "—",
                         modifier = Modifier.weight(1f)
                     )
                 }
@@ -1777,8 +1794,11 @@ class MainActivity : ComponentActivity() {
                         }
 
                         val dataDays = days.filter { it.hasData }
-                        val maxLabelDay = dataDays.maxOfOrNull { it.day } ?: 0
-                        val labelDays = setOf(maxLabelDay)
+                        val labelDays = dataDays
+                            .sortedBy { it.day }
+                            .takeLast(3)
+                            .map { it.day }
+                            .toSet()
 
                         val labelPaint = Paint().apply {
                             color = ink.toArgb()
@@ -1825,7 +1845,13 @@ class MainActivity : ComponentActivity() {
                                 val label = shortEmotionLabel(item.label)
                                 val labelWidth = labelPaint.measureText(label)
                                 val labelX = x.coerceIn(labelWidth / 2f + 10f, w - labelWidth / 2f - 10f)
-                                val labelY = (y - 24f).coerceAtLeast(28f)
+                                val labelOffset = when (item.day) {
+                                    labelDays.minOrNull() -> 52f
+                                    labelDays.maxOrNull() -> 24f
+                                    else -> 38f
+                                }
+
+                                val labelY = (y - labelOffset).coerceAtLeast(28f)
                                 val rectTop = labelY - 25f
                                 val rectLeft = labelX - labelWidth / 2f - 14f
                                 val rectWidth = labelWidth + 28f
