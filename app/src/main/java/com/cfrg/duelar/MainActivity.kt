@@ -2960,7 +2960,6 @@ class MainActivity : ComponentActivity() {
         "Agradecerte por haber llegado hasta acá.",
         "Cerrar con una respiración lenta y una frase de continuidad."
     )
-}
 
     private fun shortEmotionLabel(label: String): String {
         val clean = Normalizer.normalize(label.lowercase(), Normalizer.Form.NFD)
@@ -2976,3 +2975,4 @@ class MainActivity : ComponentActivity() {
             else -> label.take(12)
         }
     }
+}
