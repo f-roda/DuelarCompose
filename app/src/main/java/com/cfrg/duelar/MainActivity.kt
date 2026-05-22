@@ -49,6 +49,8 @@ import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -58,6 +60,7 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Rect
 
 enum class Screen {
     Splash, Welcome, LossType, Test, Intensity, Result, Home, DayList, DayDetail, History, Insights, Final, Settings
@@ -1679,7 +1682,7 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     private fun EmotionLineChart(days: List<EmotionDay>) {
-        val chartHeight = 250.dp
+        val chartHeight = 260.dp
 
         Column {
             Row(
@@ -1688,7 +1691,7 @@ class MainActivity : ComponentActivity() {
             ) {
                 Column(
                     modifier = Modifier
-                        .width(30.dp)
+                        .width(32.dp)
                         .height(chartHeight),
                     verticalArrangement = Arrangement.SpaceBetween,
                     horizontalAlignment = Alignment.End
@@ -1696,14 +1699,14 @@ class MainActivity : ComponentActivity() {
                     listOf("10", "8", "6", "4", "2", "1").forEach {
                         Text(
                             it,
-                            color = muted,
+                            color = muted.copy(alpha = 0.8f),
                             fontSize = 11.sp,
-                            fontWeight = FontWeight.SemiBold
+                            fontWeight = FontWeight.Bold
                         )
                     }
                 }
 
-                Spacer(Modifier.width(8.dp))
+                Spacer(Modifier.width(10.dp))
 
                 Box(
                     modifier = Modifier
@@ -1713,13 +1716,13 @@ class MainActivity : ComponentActivity() {
                     Canvas(modifier = Modifier.fillMaxSize()) {
                         val w = size.width
                         val h = size.height
-                        val topPad = 8f
-                        val bottomPad = 28f
+                        val topPad = 12f
+                        val bottomPad = 32f
                         val chartH = h - topPad - bottomPad
                         val chartW = w
 
-                        val gridColor = muted.copy(alpha = 0.13f)
-                        val axisColor = muted.copy(alpha = 0.32f)
+                        val gridColor = muted.copy(alpha = 0.1f)
+                        val axisColor = muted.copy(alpha = 0.25f)
 
                         fun yForIntensity(value: Int): Float {
                             val v = value.coerceIn(1, 10)
@@ -1730,26 +1733,25 @@ class MainActivity : ComponentActivity() {
                             return ((day - 1) / 29f) * chartW
                         }
 
-                        // Fondo interno del gráfico
+                        // Background with subtle shadow effect
                         drawRoundRect(
-                            color = Color.White.copy(alpha = 0.52f),
+                            color = Color.White.copy(alpha = 0.65f),
                             topLeft = Offset(0f, 0f),
-                            size = Size(w, h - 18f),
-                            cornerRadius = CornerRadius(24f, 24f)
+                            size = Size(w, h - 22f),
+                            cornerRadius = CornerRadius(28f, 28f)
                         )
 
-                        // Líneas horizontales
+                        // Grid Lines
                         listOf(10, 8, 6, 4, 2, 1).forEach { value ->
                             val y = yForIntensity(value)
                             drawLine(
                                 color = gridColor,
                                 start = Offset(0f, y),
                                 end = Offset(w, y),
-                                strokeWidth = 1.2f
+                                strokeWidth = 1f
                             )
                         }
 
-                        // Líneas verticales principales
                         listOf(1, 5, 10, 15, 20, 25, 30).forEach { day ->
                             val x = xForDay(day)
                             drawLine(
@@ -1760,115 +1762,160 @@ class MainActivity : ComponentActivity() {
                             )
                         }
 
-                        // Eje inferior
+                        // Bottom Axis
                         drawLine(
                             color = axisColor,
                             start = Offset(0f, h - bottomPad),
                             end = Offset(w, h - bottomPad),
-                            strokeWidth = 1.4f
+                            strokeWidth = 1.5f
                         )
 
-                        // Barras suaves verticales por día
+                        // Data bars (subtle background)
                         days.forEach { item ->
                             val x = xForDay(item.day)
-                            val barWidth = (w / 44f).coerceAtLeast(5f)
+                            val barWidth = (w / 40f).coerceAtLeast(6f)
 
                             if (item.hasData) {
                                 val y = yForIntensity(item.intensity)
-                                val barTop = y
-                                val barHeight = (h - bottomPad) - y
-
                                 drawRoundRect(
-                                    color = item.color.copy(alpha = 0.18f),
-                                    topLeft = Offset(x - barWidth / 2f, barTop),
-                                    size = Size(barWidth, barHeight),
-                                    cornerRadius = CornerRadius(18f, 18f)
+                                    color = item.color.copy(alpha = 0.12f),
+                                    topLeft = Offset(x - barWidth / 2f, y),
+                                    size = Size(barWidth, (h - bottomPad) - y),
+                                    cornerRadius = CornerRadius(12f, 12f)
                                 )
                             } else {
                                 drawCircle(
-                                    color = soft.copy(alpha = 0.9f),
-                                    radius = 3.2f,
+                                    color = soft.copy(alpha = 0.7f),
+                                    radius = 2.5f,
                                     center = Offset(x, h - bottomPad)
                                 )
                             }
                         }
 
-                        val dataDays = days.filter { it.hasData }
-                        val labelDays = dataDays
-                            .sortedBy { it.day }
-                            .takeLast(3)
-                            .map { it.day }
-                            .toSet()
+                        val dataDays = days.filter { it.hasData }.sortedBy { it.day }
+                        if (dataDays.isNotEmpty()) {
+                            val strokePath = Path().apply {
+                                val first = dataDays.first()
+                                moveTo(xForDay(first.day), yForIntensity(first.intensity))
+                                dataDays.drop(1).forEach { item ->
+                                    lineTo(xForDay(item.day), yForIntensity(item.intensity))
+                                }
+                            }
 
+                            val fillPath = Path().apply {
+                                addPath(strokePath)
+                                lineTo(xForDay(dataDays.last().day), h - bottomPad)
+                                lineTo(xForDay(dataDays.first().day), h - bottomPad)
+                                close()
+                            }
+
+                            // Area Fill
+                            drawPath(
+                                path = fillPath,
+                                brush = Brush.verticalGradient(
+                                    colors = listOf(
+                                        accent.copy(alpha = 0.15f),
+                                        accent.copy(alpha = 0.02f)
+                                    ),
+                                    startY = topPad,
+                                    endY = h - bottomPad
+                                )
+                            )
+
+                            // Main Line
+                            drawPath(
+                                path = strokePath,
+                                color = ink.copy(alpha = 0.85f),
+                                style = Stroke(width = 4f, miter = 10f)
+                            )
+                        }
+
+                        val labelDays = dataDays.takeLast(3).map { it.day }.toSet()
                         val labelPaint = Paint().apply {
                             color = ink.toArgb()
-                            textSize = 23f
+                            textSize = 24f
                             typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
                             textAlign = Paint.Align.CENTER
                             isAntiAlias = true
                         }
 
-                        // Línea principal
-                        dataDays.zipWithNext().forEach { (a, b) ->
-                            drawLine(
-                                color = ink.copy(alpha = 0.72f),
-                                start = Offset(xForDay(a.day), yForIntensity(a.intensity)),
-                                end = Offset(xForDay(b.day), yForIntensity(b.intensity)),
-                                strokeWidth = 3.4f
-                            )
-                        }
-
-                        // Puntos
                         dataDays.forEach { item ->
                             val x = xForDay(item.day)
                             val y = yForIntensity(item.intensity)
 
+                            // Point decoration
                             drawCircle(
                                 color = Color.White,
-                                radius = 8.5f,
+                                radius = 10f,
                                 center = Offset(x, y)
                             )
-
                             drawCircle(
                                 color = item.color,
-                                radius = 6.2f,
+                                radius = 7f,
                                 center = Offset(x, y)
                             )
-
                             drawCircle(
-                                color = ink.copy(alpha = 0.12f),
-                                radius = 10.5f,
-                                center = Offset(x, y)
+                                color = ink.copy(alpha = 0.15f),
+                                radius = 12f,
+                                center = Offset(x, y),
+                                style = Stroke(width = 2f)
                             )
+                        }
 
-                            if (item.day in labelDays) {
-                                val label = shortEmotionLabel(item.label)
-                                val labelWidth = labelPaint.measureText(label)
-                                val labelX = x.coerceIn(labelWidth / 2f + 10f, w - labelWidth / 2f - 10f)
-                                val labelOffset = when (item.day) {
-                                    labelDays.minOrNull() -> 52f
-                                    labelDays.maxOrNull() -> 24f
-                                    else -> 38f
-                                }
+                        // Tooltip labels with simple collision detection to avoid overlap
+                        val placedLabelRects = mutableListOf<Rect>()
+                        dataDays.filter { it.day in labelDays }.reversed().forEach { item ->
+                            val x = xForDay(item.day)
+                            val y = yForIntensity(item.intensity)
+                            val label = shortEmotionLabel(item.label)
+                            val labelWidth = labelPaint.measureText(label)
+                            
+                            val rectPaddingHorizontal = 18f
+                            val rectWidth = labelWidth + rectPaddingHorizontal * 2
+                            val rectHeight = 40f
+                            
+                            val labelX = x.coerceIn(rectWidth / 2f + 12f, w - rectWidth / 2f - 12f)
+                            
+                            var currentYOffset = 45f
+                            var labelY = (y - currentYOffset).coerceAtLeast(32f)
+                            val rectLeft = labelX - rectWidth / 2f
+                            var rectTop = labelY - 30f
+                            
+                            var labelRect = Rect(rectLeft, rectTop, rectLeft + rectWidth, rectTop + rectHeight)
 
-                                val labelY = (y - labelOffset).coerceAtLeast(28f)
-                                val rectTop = labelY - 25f
-                                val rectLeft = labelX - labelWidth / 2f - 14f
-                                val rectWidth = labelWidth + 28f
-                                val rectHeight = 32f
+                            // Collision detection: if it overlaps, try moving it up
+                            var attempts = 0
+                            while (placedLabelRects.any { it.overlaps(labelRect) } && attempts < 2) {
+                                currentYOffset += 45f
+                                labelY = (y - currentYOffset).coerceAtLeast(32f)
+                                rectTop = labelY - 30f
+                                labelRect = Rect(rectLeft, rectTop, rectLeft + rectWidth, rectTop + rectHeight)
+                                attempts++
+                            }
 
+                            if (!placedLabelRects.any { it.overlaps(labelRect) }) {
+                                placedLabelRects.add(labelRect)
+
+                                // Shadow/Glow for label
                                 drawRoundRect(
-                                    color = Color.White.copy(alpha = 0.92f),
-                                    topLeft = Offset(rectLeft, rectTop),
+                                    color = Color.Black.copy(alpha = 0.08f),
+                                    topLeft = Offset(rectLeft + 2f, rectTop + 2f),
                                     size = Size(rectWidth, rectHeight),
-                                    cornerRadius = CornerRadius(18f, 18f)
+                                    cornerRadius = CornerRadius(22f, 22f)
                                 )
 
                                 drawRoundRect(
-                                    color = item.color.copy(alpha = 0.22f),
+                                    color = Color.White,
                                     topLeft = Offset(rectLeft, rectTop),
                                     size = Size(rectWidth, rectHeight),
-                                    cornerRadius = CornerRadius(18f, 18f)
+                                    cornerRadius = CornerRadius(22f, 22f)
+                                )
+
+                                drawRoundRect(
+                                    color = item.color.copy(alpha = 0.28f),
+                                    topLeft = Offset(rectLeft, rectTop),
+                                    size = Size(rectWidth, rectHeight),
+                                    cornerRadius = CornerRadius(22f, 22f)
                                 )
 
                                 drawContext.canvas.nativeCanvas.drawText(
@@ -1883,18 +1930,18 @@ class MainActivity : ComponentActivity() {
                 }
             }
 
-            Spacer(Modifier.height(8.dp))
+            Spacer(Modifier.height(10.dp))
 
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 38.dp),
+                    .padding(start = 42.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 listOf("1", "5", "10", "15", "20", "25", "30").forEach {
                     Text(
                         it,
-                        color = muted,
+                        color = muted.copy(alpha = 0.9f),
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Bold
                     )
@@ -1904,10 +1951,11 @@ class MainActivity : ComponentActivity() {
             Spacer(Modifier.height(4.dp))
 
             Text(
-                "Días",
-                color = muted,
-                fontSize = 13.sp,
-                modifier = Modifier.padding(start = 38.dp)
+                "Día del proceso",
+                color = muted.copy(alpha = 0.7f),
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Medium,
+                modifier = Modifier.padding(start = 42.dp)
             )
         }
     }
