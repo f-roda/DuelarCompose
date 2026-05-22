@@ -34,11 +34,8 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.runtime.*
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.tween
+import androidx.compose.animation.*
+import androidx.compose.animation.core.*
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -56,7 +53,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import java.text.Normalizer
 import androidx.compose.foundation.Image
-import androidx.compose.animation.Crossfade
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.geometry.CornerRadius
@@ -180,9 +176,25 @@ class MainActivity : ComponentActivity() {
             }
 
             Surface(color = bg) {
-                Crossfade(
+                AnimatedContent(
                     targetState = screen,
-                    animationSpec = tween(350),
+                    transitionSpec = {
+                        if (initialState == Screen.Splash || targetState == Screen.Splash) {
+                            fadeIn(animationSpec = tween(700)) togetherWith fadeOut(animationSpec = tween(700))
+                        } else {
+                            val enterTransition = if (targetState.ordinal > initialState.ordinal) {
+                                slideInHorizontally(animationSpec = spring(stiffness = Spring.StiffnessLow, dampingRatio = Spring.DampingRatioNoBouncy)) { it } + fadeIn(animationSpec = tween(400))
+                            } else {
+                                slideInHorizontally(animationSpec = spring(stiffness = Spring.StiffnessLow, dampingRatio = Spring.DampingRatioNoBouncy)) { -it } + fadeIn(animationSpec = tween(400))
+                            }
+                            val exitTransition = if (targetState.ordinal > initialState.ordinal) {
+                                slideOutHorizontally(animationSpec = spring(stiffness = Spring.StiffnessLow, dampingRatio = Spring.DampingRatioNoBouncy)) { -it / 3 } + fadeOut(animationSpec = tween(350))
+                            } else {
+                                slideOutHorizontally(animationSpec = spring(stiffness = Spring.StiffnessLow, dampingRatio = Spring.DampingRatioNoBouncy)) { it / 3 } + fadeOut(animationSpec = tween(350))
+                            }
+                            enterTransition togetherWith exitTransition
+                        }
+                    },
                     label = "screenTransition"
                 ) { currentScreen ->
                     when (currentScreen) {
@@ -391,10 +403,10 @@ class MainActivity : ComponentActivity() {
 
                             if (enabled) {
                                 scheduleDailyReminder(hour, minute)
-                                Toast.makeText(this, "Notificación diaria activada", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(this@MainActivity, "Notificación diaria activada", Toast.LENGTH_SHORT).show()
                             } else {
                                 cancelDailyReminder()
-                                Toast.makeText(this, "Notificaciones desactivadas", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(this@MainActivity, "Notificaciones desactivadas", Toast.LENGTH_SHORT).show()
                             }
                         },
                         onReset = {
@@ -432,6 +444,31 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     private fun SplashScreen() {
+        var startAnimation by remember { mutableStateOf(false) }
+        val alpha by animateFloatAsState(
+            targetValue = if (startAnimation) 1f else 0f,
+            animationSpec = tween(1400), label = "alpha"
+        )
+        val scale by animateFloatAsState(
+            targetValue = if (startAnimation) 1.02f else 0.85f,
+            animationSpec = spring(
+                dampingRatio = Spring.DampingRatioMediumBouncy,
+                stiffness = Spring.StiffnessVeryLow
+            ), label = "scale"
+        )
+        val slideUp by animateFloatAsState(
+            targetValue = if (startAnimation) 0f else 60f,
+            animationSpec = spring(
+                dampingRatio = Spring.DampingRatioNoBouncy,
+                stiffness = Spring.StiffnessLow
+            ), label = "slide"
+        )
+
+        LaunchedEffect(Unit) {
+            delay(100)
+            startAnimation = true
+        }
+
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -451,7 +488,13 @@ class MainActivity : ComponentActivity() {
                 contentDescription = "Duelar",
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(360.dp),
+                    .height(360.dp)
+                    .graphicsLayer {
+                        this.alpha = alpha
+                        this.scaleX = scale
+                        this.scaleY = scale
+                        this.translationY = slideUp
+                    },
                 contentScale = ContentScale.Fit
             )
         }
@@ -1604,76 +1647,77 @@ class MainActivity : ComponentActivity() {
         }
 
         Card(
-            colors = CardDefaults.cardColors(containerColor = card.copy(alpha = 0.94f)),
-            shape = RoundedCornerShape(32.dp),
-            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+            colors = CardDefaults.cardColors(containerColor = card.copy(alpha = 0.96f)),
+            shape = RoundedCornerShape(36.dp),
+            elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 8.dp)
+                .padding(vertical = 10.dp)
         ) {
-            Column(Modifier.padding(22.dp)) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
+            Column(Modifier.padding(24.dp)) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
                     Surface(
-                        color = accentSoft.copy(alpha = 0.9f),
-                        shape = RoundedCornerShape(50.dp),
-                        modifier = Modifier.size(44.dp)
+                        color = accent.copy(alpha = 0.12f),
+                        shape = RoundedCornerShape(16.dp),
+                        modifier = Modifier.size(48.dp)
                     ) {
                         Box(contentAlignment = Alignment.Center) {
-                            Text("↗", color = ink, fontSize = 23.sp, fontWeight = FontWeight.Bold)
+                            Text("📈", fontSize = 22.sp)
                         }
                     }
 
-                    Spacer(Modifier.width(14.dp))
+                    Spacer(Modifier.width(16.dp))
 
-                    Column {
+                    Column(modifier = Modifier.weight(1f)) {
                         Text(
-                            "Tu proceso emocional día a día",
+                            "Tu proceso emocional",
                             color = ink,
-                            fontSize = 19.sp,
-                            fontWeight = FontWeight.Bold
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.ExtraBold
                         )
-                        Spacer(Modifier.height(3.dp))
                         Text(
-                            "Una lectura orientativa de lo que aparece en tu journal.",
+                            "Evolución de tus registros diarios",
                             color = muted,
-                            fontSize = 14.sp,
-                            lineHeight = 20.sp
+                            fontSize = 14.sp
                         )
                     }
                 }
 
-                Spacer(Modifier.height(18.dp))
+                Spacer(Modifier.height(24.dp))
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     MiniMetric(
-                        title = "Últimas emociones",
+                        title = "Tendencia reciente",
                         value = recentEmotionText,
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.weight(1.2f)
                     )
                     MiniMetric(
-                        title = "Intensidad promedio",
+                        title = "Intensidad",
                         value = if (recentAverageIntensity > 0) "$recentAverageIntensity/10" else "—",
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.weight(0.8f)
                     )
                 }
 
+                Spacer(Modifier.height(28.dp))
+
+                EmotionBarChart(days)
+
                 Spacer(Modifier.height(20.dp))
 
-                EmotionLineChart(days)
-
-                Spacer(Modifier.height(14.dp))
-
                 Text(
-                    "Cada punto representa un día con journal. La altura muestra intensidad estimada del 1 al 10. El color muestra la emoción más presente.",
-                    color = muted,
-                    fontSize = 14.sp,
-                    lineHeight = 21.sp
+                    "Cada barra muestra la intensidad estimada del día. El color indica la emoción predominante en tu journal.",
+                    color = muted.copy(alpha = 0.8f),
+                    fontSize = 13.sp,
+                    lineHeight = 19.sp
                 )
 
-                Spacer(Modifier.height(16.dp))
+                Spacer(Modifier.height(20.dp))
 
                 EmotionLegend()
             }
@@ -1681,8 +1725,8 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
-    private fun EmotionLineChart(days: List<EmotionDay>) {
-        val chartHeight = 260.dp
+    private fun EmotionBarChart(days: List<EmotionDay>) {
+        val chartHeight = 280.dp
 
         Column {
             Row(
@@ -1691,22 +1735,22 @@ class MainActivity : ComponentActivity() {
             ) {
                 Column(
                     modifier = Modifier
-                        .width(32.dp)
-                        .height(chartHeight),
+                        .width(28.dp)
+                        .height(chartHeight - 44.dp),
                     verticalArrangement = Arrangement.SpaceBetween,
                     horizontalAlignment = Alignment.End
                 ) {
                     listOf("10", "8", "6", "4", "2", "1").forEach {
                         Text(
                             it,
-                            color = muted.copy(alpha = 0.8f),
+                            color = muted.copy(alpha = 0.5f),
                             fontSize = 11.sp,
                             fontWeight = FontWeight.Bold
                         )
                     }
                 }
 
-                Spacer(Modifier.width(10.dp))
+                Spacer(Modifier.width(12.dp))
 
                 Box(
                     modifier = Modifier
@@ -1716,14 +1760,13 @@ class MainActivity : ComponentActivity() {
                     Canvas(modifier = Modifier.fillMaxSize()) {
                         val w = size.width
                         val h = size.height
-                        val topPad = 12f
-                        val bottomPad = 32f
+                        val topPad = 24f
+                        val bottomPad = 44f
                         val chartH = h - topPad - bottomPad
                         val chartW = w
 
-                        val gridColor = muted.copy(alpha = 0.1f)
-                        val axisColor = muted.copy(alpha = 0.25f)
-
+                        val gridColor = muted.copy(alpha = 0.06f)
+                        
                         fun yForIntensity(value: Int): Float {
                             val v = value.coerceIn(1, 10)
                             return topPad + ((10 - v) / 9f) * chartH
@@ -1733,16 +1776,8 @@ class MainActivity : ComponentActivity() {
                             return ((day - 1) / 29f) * chartW
                         }
 
-                        // Background with subtle shadow effect
-                        drawRoundRect(
-                            color = Color.White.copy(alpha = 0.65f),
-                            topLeft = Offset(0f, 0f),
-                            size = Size(w, h - 22f),
-                            cornerRadius = CornerRadius(28f, 28f)
-                        )
-
-                        // Grid Lines
-                        listOf(10, 8, 6, 4, 2, 1).forEach { value ->
+                        // Horizontal Grid Lines
+                        listOf(2, 4, 6, 8, 10).forEach { value ->
                             val y = yForIntensity(value)
                             drawLine(
                                 color = gridColor,
@@ -1752,85 +1787,50 @@ class MainActivity : ComponentActivity() {
                             )
                         }
 
-                        listOf(1, 5, 10, 15, 20, 25, 30).forEach { day ->
-                            val x = xForDay(day)
-                            drawLine(
-                                color = gridColor,
-                                start = Offset(x, topPad),
-                                end = Offset(x, h - bottomPad),
-                                strokeWidth = 1f
-                            )
-                        }
-
-                        // Bottom Axis
-                        drawLine(
-                            color = axisColor,
-                            start = Offset(0f, h - bottomPad),
-                            end = Offset(w, h - bottomPad),
-                            strokeWidth = 1.5f
-                        )
-
-                        // Data bars (subtle background)
+                        val barWidth = (chartW / 30f) * 0.8f
+                        
                         days.forEach { item ->
-                            val x = xForDay(item.day)
-                            val barWidth = (w / 40f).coerceAtLeast(6f)
-
                             if (item.hasData) {
+                                val x = xForDay(item.day)
                                 val y = yForIntensity(item.intensity)
+                                
+                                // Modern Bar with Gradient
                                 drawRoundRect(
-                                    color = item.color.copy(alpha = 0.12f),
+                                    brush = Brush.verticalGradient(
+                                        colors = listOf(
+                                            item.color,
+                                            item.color.copy(alpha = 0.4f)
+                                        ),
+                                        startY = y,
+                                        endY = h - bottomPad
+                                    ),
                                     topLeft = Offset(x - barWidth / 2f, y),
                                     size = Size(barWidth, (h - bottomPad) - y),
                                     cornerRadius = CornerRadius(12f, 12f)
                                 )
+                                
+                                // Optional: subtle highlight on top
+                                drawLine(
+                                    color = item.color,
+                                    start = Offset(x - barWidth / 2f + 4f, y + 2f),
+                                    end = Offset(x + barWidth / 2f - 4f, y + 2f),
+                                    strokeWidth = 3f,
+                                    cap = androidx.compose.ui.graphics.StrokeCap.Round
+                                )
                             } else {
+                                // Subtle placeholder for empty days
+                                val x = xForDay(item.day)
                                 drawCircle(
-                                    color = soft.copy(alpha = 0.7f),
-                                    radius = 2.5f,
-                                    center = Offset(x, h - bottomPad)
+                                    color = muted.copy(alpha = 0.1f),
+                                    radius = 3f,
+                                    center = Offset(x, h - bottomPad - 4f)
                                 )
                             }
                         }
 
+                        // Floating Labels for recent data
                         val dataDays = days.filter { it.hasData }.sortedBy { it.day }
-                        if (dataDays.isNotEmpty()) {
-                            val strokePath = Path().apply {
-                                val first = dataDays.first()
-                                moveTo(xForDay(first.day), yForIntensity(first.intensity))
-                                dataDays.drop(1).forEach { item ->
-                                    lineTo(xForDay(item.day), yForIntensity(item.intensity))
-                                }
-                            }
-
-                            val fillPath = Path().apply {
-                                addPath(strokePath)
-                                lineTo(xForDay(dataDays.last().day), h - bottomPad)
-                                lineTo(xForDay(dataDays.first().day), h - bottomPad)
-                                close()
-                            }
-
-                            // Area Fill
-                            drawPath(
-                                path = fillPath,
-                                brush = Brush.verticalGradient(
-                                    colors = listOf(
-                                        accent.copy(alpha = 0.15f),
-                                        accent.copy(alpha = 0.02f)
-                                    ),
-                                    startY = topPad,
-                                    endY = h - bottomPad
-                                )
-                            )
-
-                            // Main Line
-                            drawPath(
-                                path = strokePath,
-                                color = ink.copy(alpha = 0.85f),
-                                style = Stroke(width = 4f, miter = 10f)
-                            )
-                        }
-
-                        val labelDays = dataDays.takeLast(3).map { it.day }.toSet()
+                        val labelDays = dataDays.takeLast(2).map { it.day }.toSet()
                         val labelPaint = Paint().apply {
                             color = ink.toArgb()
                             textSize = 24f
@@ -1839,83 +1839,48 @@ class MainActivity : ComponentActivity() {
                             isAntiAlias = true
                         }
 
-                        dataDays.forEach { item ->
-                            val x = xForDay(item.day)
-                            val y = yForIntensity(item.intensity)
-
-                            // Point decoration
-                            drawCircle(
-                                color = Color.White,
-                                radius = 10f,
-                                center = Offset(x, y)
-                            )
-                            drawCircle(
-                                color = item.color,
-                                radius = 7f,
-                                center = Offset(x, y)
-                            )
-                            drawCircle(
-                                color = ink.copy(alpha = 0.15f),
-                                radius = 12f,
-                                center = Offset(x, y),
-                                style = Stroke(width = 2f)
-                            )
-                        }
-
-                        // Tooltip labels with simple collision detection to avoid overlap
                         val placedLabelRects = mutableListOf<Rect>()
+                        
                         dataDays.filter { it.day in labelDays }.reversed().forEach { item ->
                             val x = xForDay(item.day)
                             val y = yForIntensity(item.intensity)
                             val label = shortEmotionLabel(item.label)
                             val labelWidth = labelPaint.measureText(label)
                             
-                            val rectPaddingHorizontal = 18f
+                            val rectPaddingHorizontal = 16f
                             val rectWidth = labelWidth + rectPaddingHorizontal * 2
-                            val rectHeight = 40f
+                            val rectHeight = 44f
                             
-                            val labelX = x.coerceIn(rectWidth / 2f + 12f, w - rectWidth / 2f - 12f)
-                            
-                            var currentYOffset = 45f
-                            var labelY = (y - currentYOffset).coerceAtLeast(32f)
+                            val labelX = x.coerceIn(rectWidth / 2f + 8f, w - rectWidth / 2f - 8f)
+                            val labelY = (y - 50f).coerceAtLeast(40f)
                             val rectLeft = labelX - rectWidth / 2f
-                            var rectTop = labelY - 30f
+                            val rectTop = labelY - 32f
                             
-                            var labelRect = Rect(rectLeft, rectTop, rectLeft + rectWidth, rectTop + rectHeight)
-
-                            // Collision detection: if it overlaps, try moving it up
-                            var attempts = 0
-                            while (placedLabelRects.any { it.overlaps(labelRect) } && attempts < 2) {
-                                currentYOffset += 45f
-                                labelY = (y - currentYOffset).coerceAtLeast(32f)
-                                rectTop = labelY - 30f
-                                labelRect = Rect(rectLeft, rectTop, rectLeft + rectWidth, rectTop + rectHeight)
-                                attempts++
-                            }
+                            val labelRect = Rect(rectLeft, rectTop, rectLeft + rectWidth, rectTop + rectHeight)
 
                             if (!placedLabelRects.any { it.overlaps(labelRect) }) {
                                 placedLabelRects.add(labelRect)
 
-                                // Shadow/Glow for label
+                                // Label Shadow (simplified)
                                 drawRoundRect(
                                     color = Color.Black.copy(alpha = 0.08f),
                                     topLeft = Offset(rectLeft + 2f, rectTop + 2f),
                                     size = Size(rectWidth, rectHeight),
-                                    cornerRadius = CornerRadius(22f, 22f)
+                                    cornerRadius = CornerRadius(16f, 16f)
                                 )
 
                                 drawRoundRect(
                                     color = Color.White,
                                     topLeft = Offset(rectLeft, rectTop),
                                     size = Size(rectWidth, rectHeight),
-                                    cornerRadius = CornerRadius(22f, 22f)
+                                    cornerRadius = CornerRadius(16f, 16f)
                                 )
 
                                 drawRoundRect(
-                                    color = item.color.copy(alpha = 0.28f),
+                                    color = item.color.copy(alpha = 0.15f),
                                     topLeft = Offset(rectLeft, rectTop),
                                     size = Size(rectWidth, rectHeight),
-                                    cornerRadius = CornerRadius(22f, 22f)
+                                    cornerRadius = CornerRadius(16f, 16f)
                                 )
 
                                 drawContext.canvas.nativeCanvas.drawText(
@@ -1930,36 +1895,27 @@ class MainActivity : ComponentActivity() {
                 }
             }
 
-            Spacer(Modifier.height(10.dp))
+            Spacer(Modifier.height(12.dp))
 
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 42.dp),
+                    .padding(start = 40.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 listOf("1", "5", "10", "15", "20", "25", "30").forEach {
                     Text(
                         it,
-                        color = muted.copy(alpha = 0.9f),
+                        color = muted.copy(alpha = 0.6f),
                         fontSize = 12.sp,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.ExtraBold
                     )
                 }
             }
-
-            Spacer(Modifier.height(4.dp))
-
-            Text(
-                "Día del proceso",
-                color = muted.copy(alpha = 0.7f),
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Medium,
-                modifier = Modifier.padding(start = 42.dp)
-            )
         }
     }
 
+    @OptIn(ExperimentalLayoutApi::class)
     @Composable
     private fun EmotionLegend() {
         val items = listOf(
@@ -1974,51 +1930,44 @@ class MainActivity : ComponentActivity() {
 
         Column {
             Text(
-                "Color por emoción",
-                color = muted,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.SemiBold
+                "Guía de colores",
+                color = muted.copy(alpha = 0.8f),
+                fontSize = 13.sp,
+                fontWeight = FontWeight.Bold
             )
 
-            Spacer(Modifier.height(10.dp))
+            Spacer(Modifier.height(14.dp))
 
-            items.chunked(2).forEach { row ->
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    row.forEach { (label, color) ->
-                        Surface(
-                            color = color.copy(alpha = 0.18f),
-                            shape = RoundedCornerShape(18.dp),
-                            modifier = Modifier.weight(1f)
+            FlowRow(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items.forEach { (label, color) ->
+                    Surface(
+                        color = color.copy(alpha = 0.12f),
+                        shape = RoundedCornerShape(12.dp),
+                        border = androidx.compose.foundation.BorderStroke(1.dp, color.copy(alpha = 0.2f))
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp)
                         ) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier.padding(horizontal = 12.dp, vertical = 9.dp)
-                            ) {
-                                Box(
-                                    modifier = Modifier
-                                        .size(11.dp)
-                                        .background(color, RoundedCornerShape(20.dp))
-                                )
-                                Spacer(Modifier.width(8.dp))
-                                Text(
-                                    label,
-                                    color = ink,
-                                    fontSize = 13.sp,
-                                    fontWeight = FontWeight.SemiBold
-                                )
-                            }
+                            Box(
+                                modifier = Modifier
+                                    .size(8.dp)
+                                    .background(color, RoundedCornerShape(50.dp))
+                            )
+                            Spacer(Modifier.width(6.dp))
+                            Text(
+                                label,
+                                color = ink.copy(alpha = 0.9f),
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.SemiBold
+                            )
                         }
                     }
-
-                    if (row.size == 1) {
-                        Spacer(modifier = Modifier.weight(1f))
-                    }
                 }
-
-                Spacer(Modifier.height(8.dp))
             }
         }
     }
