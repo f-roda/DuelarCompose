@@ -31,14 +31,14 @@ MERGED from [androidx.core:core:1.13.1] /Users/froda/.gradle/caches/9.0.0/transf
 MERGED from [androidx.customview:customview-poolingcontainer:1.0.0] /Users/froda/.gradle/caches/9.0.0/transforms/92187b0964c0ee62013db8467ffe8905/transformed/customview-poolingcontainer-1.0.0/AndroidManifest.xml:17:1-23:12
 MERGED from [androidx.savedstate:savedstate-ktx:1.2.1] /Users/froda/.gradle/caches/9.0.0/transforms/009253358099ddace9d36092b93304bc/transformed/savedstate-ktx-1.2.1/AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.savedstate:savedstate:1.2.1] /Users/froda/.gradle/caches/9.0.0/transforms/50098f8c2dbac48950a433d8d41248f5/transformed/savedstate-1.2.1/AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.8.3] /Users/froda/.gradle/caches/9.0.0/transforms/5718c755b9933834ad3a762a7dbccdf3/transformed/lifecycle-livedata-core-2.8.3/AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.lifecycle:lifecycle-viewmodel-android:2.8.3] /Users/froda/.gradle/caches/9.0.0/transforms/6cdfc90869b5decde5553f1bfdc9a439/transformed/lifecycle-viewmodel-release/AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.lifecycle:lifecycle-runtime-ktx-android:2.8.3] /Users/froda/.gradle/caches/9.0.0/transforms/f91f3dc6251b388f8ee7a55b42ff4499/transformed/lifecycle-runtime-ktx-release/AndroidManifest.xml:2:1-7:12
-MERGED from [androidx.lifecycle:lifecycle-runtime-android:2.8.3] /Users/froda/.gradle/caches/9.0.0/transforms/fd7ee7f02081d2439a6f8f1cfd4fe5a2/transformed/lifecycle-runtime-release/AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.3] /Users/froda/.gradle/caches/9.0.0/transforms/5a04c422533686ec4c16b2877b321d10/transformed/lifecycle-viewmodel-ktx-2.8.3/AndroidManifest.xml:2:1-7:12
-MERGED from [androidx.lifecycle:lifecycle-process:2.8.3] /Users/froda/.gradle/caches/9.0.0/transforms/ec2a6b6149753017976343b78625d6cf/transformed/lifecycle-process-2.8.3/AndroidManifest.xml:17:1-35:12
-MERGED from [androidx.lifecycle:lifecycle-runtime-compose-android:2.8.3] /Users/froda/.gradle/caches/9.0.0/transforms/842f012ec4295e24d5d10ce66417312a/transformed/lifecycle-runtime-compose-release/AndroidManifest.xml:2:1-7:12
-MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.8.3] /Users/froda/.gradle/caches/9.0.0/transforms/fd6ef67525afc6b3080c07307a808bde/transformed/lifecycle-viewmodel-savedstate-2.8.3/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.8.6] /Users/froda/.gradle/caches/9.0.0/transforms/2ebb965a10a2e42cb9d4a94a3f9f780b/transformed/lifecycle-livedata-core-2.8.6/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-runtime-compose-android:2.8.6] /Users/froda/.gradle/caches/9.0.0/transforms/a4923c0153334651e58be04d37762ae7/transformed/lifecycle-runtime-compose-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.lifecycle:lifecycle-process:2.8.6] /Users/froda/.gradle/caches/9.0.0/transforms/14d242f584fbca3c6ae03c1a1c5fd52b/transformed/lifecycle-process-2.8.6/AndroidManifest.xml:17:1-35:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-android:2.8.6] /Users/froda/.gradle/caches/9.0.0/transforms/0b97a2aa2e0e6046b4b0966feb68907a/transformed/lifecycle-viewmodel-release/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-runtime-android:2.8.6] /Users/froda/.gradle/caches/9.0.0/transforms/7b5a9ceac64d2f497463107b3fee73f1/transformed/lifecycle-runtime-release/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.6] /Users/froda/.gradle/caches/9.0.0/transforms/75ac9160b8cb1d5622563a5a6fe89788/transformed/lifecycle-viewmodel-ktx-2.8.6/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.lifecycle:lifecycle-runtime-ktx-android:2.8.6] /Users/froda/.gradle/caches/9.0.0/transforms/f543500ffadefb4503ec044042b32d2e/transformed/lifecycle-runtime-ktx-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.8.6] /Users/froda/.gradle/caches/9.0.0/transforms/508b604b6f9eb70f20d3e25b2539e598/transformed/lifecycle-viewmodel-savedstate-2.8.6/AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.core:core-ktx:1.13.1] /Users/froda/.gradle/caches/9.0.0/transforms/07914d4756e8b58a9472162faf42d187/transformed/core-ktx-1.13.1/AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.compose.runtime:runtime-android:1.7.4] /Users/froda/.gradle/caches/9.0.0/transforms/947d15d10258dd849c2d28ad178643df/transformed/runtime-release/AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.compose.runtime:runtime-saveable-android:1.7.4] /Users/froda/.gradle/caches/9.0.0/transforms/868bc030ee6053e7750826eb329976bf/transformed/runtime-saveable-release/AndroidManifest.xml:2:1-7:12
@@ -70,8 +70,8 @@ MERGED from [androidx.emoji2:emoji2:1.3.0] /Users/froda/.gradle/caches/9.0.0/tra
 MERGED from [androidx.emoji2:emoji2:1.3.0] /Users/froda/.gradle/caches/9.0.0/transforms/5288e246157be9307960c936cb8699f2/transformed/emoji2-1.3.0/AndroidManifest.xml:23:5-33:19
 MERGED from [androidx.core:core:1.13.1] /Users/froda/.gradle/caches/9.0.0/transforms/b12bc37f3c78bd3e35ab75634da05b99/transformed/core-1.13.1/AndroidManifest.xml:28:5-89
 MERGED from [androidx.core:core:1.13.1] /Users/froda/.gradle/caches/9.0.0/transforms/b12bc37f3c78bd3e35ab75634da05b99/transformed/core-1.13.1/AndroidManifest.xml:28:5-89
-MERGED from [androidx.lifecycle:lifecycle-process:2.8.3] /Users/froda/.gradle/caches/9.0.0/transforms/ec2a6b6149753017976343b78625d6cf/transformed/lifecycle-process-2.8.3/AndroidManifest.xml:23:5-33:19
-MERGED from [androidx.lifecycle:lifecycle-process:2.8.3] /Users/froda/.gradle/caches/9.0.0/transforms/ec2a6b6149753017976343b78625d6cf/transformed/lifecycle-process-2.8.3/AndroidManifest.xml:23:5-33:19
+MERGED from [androidx.lifecycle:lifecycle-process:2.8.6] /Users/froda/.gradle/caches/9.0.0/transforms/14d242f584fbca3c6ae03c1a1c5fd52b/transformed/lifecycle-process-2.8.6/AndroidManifest.xml:23:5-33:19
+MERGED from [androidx.lifecycle:lifecycle-process:2.8.6] /Users/froda/.gradle/caches/9.0.0/transforms/14d242f584fbca3c6ae03c1a1c5fd52b/transformed/lifecycle-process-2.8.6/AndroidManifest.xml:23:5-33:19
 MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /Users/froda/.gradle/caches/9.0.0/transforms/07e2df7a7dec37f55c6e9c5f4220137d/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:24:5-25:19
 MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /Users/froda/.gradle/caches/9.0.0/transforms/07e2df7a7dec37f55c6e9c5f4220137d/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:24:5-25:19
 MERGED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/froda/.gradle/caches/9.0.0/transforms/eda7de6067060124c5286ab39bc8cbe2/transformed/profileinstaller-1.3.1/AndroidManifest.xml:23:5-53:19
@@ -174,22 +174,22 @@ MERGED from [androidx.savedstate:savedstate-ktx:1.2.1] /Users/froda/.gradle/cach
 MERGED from [androidx.savedstate:savedstate-ktx:1.2.1] /Users/froda/.gradle/caches/9.0.0/transforms/009253358099ddace9d36092b93304bc/transformed/savedstate-ktx-1.2.1/AndroidManifest.xml:20:5-44
 MERGED from [androidx.savedstate:savedstate:1.2.1] /Users/froda/.gradle/caches/9.0.0/transforms/50098f8c2dbac48950a433d8d41248f5/transformed/savedstate-1.2.1/AndroidManifest.xml:20:5-44
 MERGED from [androidx.savedstate:savedstate:1.2.1] /Users/froda/.gradle/caches/9.0.0/transforms/50098f8c2dbac48950a433d8d41248f5/transformed/savedstate-1.2.1/AndroidManifest.xml:20:5-44
-MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.8.3] /Users/froda/.gradle/caches/9.0.0/transforms/5718c755b9933834ad3a762a7dbccdf3/transformed/lifecycle-livedata-core-2.8.3/AndroidManifest.xml:20:5-44
-MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.8.3] /Users/froda/.gradle/caches/9.0.0/transforms/5718c755b9933834ad3a762a7dbccdf3/transformed/lifecycle-livedata-core-2.8.3/AndroidManifest.xml:20:5-44
-MERGED from [androidx.lifecycle:lifecycle-viewmodel-android:2.8.3] /Users/froda/.gradle/caches/9.0.0/transforms/6cdfc90869b5decde5553f1bfdc9a439/transformed/lifecycle-viewmodel-release/AndroidManifest.xml:20:5-44
-MERGED from [androidx.lifecycle:lifecycle-viewmodel-android:2.8.3] /Users/froda/.gradle/caches/9.0.0/transforms/6cdfc90869b5decde5553f1bfdc9a439/transformed/lifecycle-viewmodel-release/AndroidManifest.xml:20:5-44
-MERGED from [androidx.lifecycle:lifecycle-runtime-ktx-android:2.8.3] /Users/froda/.gradle/caches/9.0.0/transforms/f91f3dc6251b388f8ee7a55b42ff4499/transformed/lifecycle-runtime-ktx-release/AndroidManifest.xml:5:5-44
-MERGED from [androidx.lifecycle:lifecycle-runtime-ktx-android:2.8.3] /Users/froda/.gradle/caches/9.0.0/transforms/f91f3dc6251b388f8ee7a55b42ff4499/transformed/lifecycle-runtime-ktx-release/AndroidManifest.xml:5:5-44
-MERGED from [androidx.lifecycle:lifecycle-runtime-android:2.8.3] /Users/froda/.gradle/caches/9.0.0/transforms/fd7ee7f02081d2439a6f8f1cfd4fe5a2/transformed/lifecycle-runtime-release/AndroidManifest.xml:20:5-44
-MERGED from [androidx.lifecycle:lifecycle-runtime-android:2.8.3] /Users/froda/.gradle/caches/9.0.0/transforms/fd7ee7f02081d2439a6f8f1cfd4fe5a2/transformed/lifecycle-runtime-release/AndroidManifest.xml:20:5-44
-MERGED from [androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.3] /Users/froda/.gradle/caches/9.0.0/transforms/5a04c422533686ec4c16b2877b321d10/transformed/lifecycle-viewmodel-ktx-2.8.3/AndroidManifest.xml:5:5-44
-MERGED from [androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.3] /Users/froda/.gradle/caches/9.0.0/transforms/5a04c422533686ec4c16b2877b321d10/transformed/lifecycle-viewmodel-ktx-2.8.3/AndroidManifest.xml:5:5-44
-MERGED from [androidx.lifecycle:lifecycle-process:2.8.3] /Users/froda/.gradle/caches/9.0.0/transforms/ec2a6b6149753017976343b78625d6cf/transformed/lifecycle-process-2.8.3/AndroidManifest.xml:21:5-44
-MERGED from [androidx.lifecycle:lifecycle-process:2.8.3] /Users/froda/.gradle/caches/9.0.0/transforms/ec2a6b6149753017976343b78625d6cf/transformed/lifecycle-process-2.8.3/AndroidManifest.xml:21:5-44
-MERGED from [androidx.lifecycle:lifecycle-runtime-compose-android:2.8.3] /Users/froda/.gradle/caches/9.0.0/transforms/842f012ec4295e24d5d10ce66417312a/transformed/lifecycle-runtime-compose-release/AndroidManifest.xml:5:5-44
-MERGED from [androidx.lifecycle:lifecycle-runtime-compose-android:2.8.3] /Users/froda/.gradle/caches/9.0.0/transforms/842f012ec4295e24d5d10ce66417312a/transformed/lifecycle-runtime-compose-release/AndroidManifest.xml:5:5-44
-MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.8.3] /Users/froda/.gradle/caches/9.0.0/transforms/fd6ef67525afc6b3080c07307a808bde/transformed/lifecycle-viewmodel-savedstate-2.8.3/AndroidManifest.xml:20:5-44
-MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.8.3] /Users/froda/.gradle/caches/9.0.0/transforms/fd6ef67525afc6b3080c07307a808bde/transformed/lifecycle-viewmodel-savedstate-2.8.3/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.8.6] /Users/froda/.gradle/caches/9.0.0/transforms/2ebb965a10a2e42cb9d4a94a3f9f780b/transformed/lifecycle-livedata-core-2.8.6/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.8.6] /Users/froda/.gradle/caches/9.0.0/transforms/2ebb965a10a2e42cb9d4a94a3f9f780b/transformed/lifecycle-livedata-core-2.8.6/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime-compose-android:2.8.6] /Users/froda/.gradle/caches/9.0.0/transforms/a4923c0153334651e58be04d37762ae7/transformed/lifecycle-runtime-compose-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime-compose-android:2.8.6] /Users/froda/.gradle/caches/9.0.0/transforms/a4923c0153334651e58be04d37762ae7/transformed/lifecycle-runtime-compose-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-process:2.8.6] /Users/froda/.gradle/caches/9.0.0/transforms/14d242f584fbca3c6ae03c1a1c5fd52b/transformed/lifecycle-process-2.8.6/AndroidManifest.xml:21:5-44
+MERGED from [androidx.lifecycle:lifecycle-process:2.8.6] /Users/froda/.gradle/caches/9.0.0/transforms/14d242f584fbca3c6ae03c1a1c5fd52b/transformed/lifecycle-process-2.8.6/AndroidManifest.xml:21:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-android:2.8.6] /Users/froda/.gradle/caches/9.0.0/transforms/0b97a2aa2e0e6046b4b0966feb68907a/transformed/lifecycle-viewmodel-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-android:2.8.6] /Users/froda/.gradle/caches/9.0.0/transforms/0b97a2aa2e0e6046b4b0966feb68907a/transformed/lifecycle-viewmodel-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime-android:2.8.6] /Users/froda/.gradle/caches/9.0.0/transforms/7b5a9ceac64d2f497463107b3fee73f1/transformed/lifecycle-runtime-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime-android:2.8.6] /Users/froda/.gradle/caches/9.0.0/transforms/7b5a9ceac64d2f497463107b3fee73f1/transformed/lifecycle-runtime-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.6] /Users/froda/.gradle/caches/9.0.0/transforms/75ac9160b8cb1d5622563a5a6fe89788/transformed/lifecycle-viewmodel-ktx-2.8.6/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.6] /Users/froda/.gradle/caches/9.0.0/transforms/75ac9160b8cb1d5622563a5a6fe89788/transformed/lifecycle-viewmodel-ktx-2.8.6/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime-ktx-android:2.8.6] /Users/froda/.gradle/caches/9.0.0/transforms/f543500ffadefb4503ec044042b32d2e/transformed/lifecycle-runtime-ktx-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime-ktx-android:2.8.6] /Users/froda/.gradle/caches/9.0.0/transforms/f543500ffadefb4503ec044042b32d2e/transformed/lifecycle-runtime-ktx-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.8.6] /Users/froda/.gradle/caches/9.0.0/transforms/508b604b6f9eb70f20d3e25b2539e598/transformed/lifecycle-viewmodel-savedstate-2.8.6/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.8.6] /Users/froda/.gradle/caches/9.0.0/transforms/508b604b6f9eb70f20d3e25b2539e598/transformed/lifecycle-viewmodel-savedstate-2.8.6/AndroidManifest.xml:20:5-44
 MERGED from [androidx.core:core-ktx:1.13.1] /Users/froda/.gradle/caches/9.0.0/transforms/07914d4756e8b58a9472162faf42d187/transformed/core-ktx-1.13.1/AndroidManifest.xml:5:5-44
 MERGED from [androidx.core:core-ktx:1.13.1] /Users/froda/.gradle/caches/9.0.0/transforms/07914d4756e8b58a9472162faf42d187/transformed/core-ktx-1.13.1/AndroidManifest.xml:5:5-44
 MERGED from [androidx.compose.runtime:runtime-android:1.7.4] /Users/froda/.gradle/caches/9.0.0/transforms/947d15d10258dd849c2d28ad178643df/transformed/runtime-release/AndroidManifest.xml:5:5-44
@@ -222,8 +222,8 @@ ADDED from [androidx.compose.ui:ui-tooling-android:1.7.4] /Users/froda/.gradle/c
 		ADDED from [androidx.compose.ui:ui-tooling-android:1.7.4] /Users/froda/.gradle/caches/9.0.0/transforms/519e60502b344c8e9e6304c6ec8f16df/transformed/ui-tooling-release/AndroidManifest.xml:24:13-71
 provider#androidx.startup.InitializationProvider
 ADDED from [androidx.emoji2:emoji2:1.3.0] /Users/froda/.gradle/caches/9.0.0/transforms/5288e246157be9307960c936cb8699f2/transformed/emoji2-1.3.0/AndroidManifest.xml:24:9-32:20
-MERGED from [androidx.lifecycle:lifecycle-process:2.8.3] /Users/froda/.gradle/caches/9.0.0/transforms/ec2a6b6149753017976343b78625d6cf/transformed/lifecycle-process-2.8.3/AndroidManifest.xml:24:9-32:20
-MERGED from [androidx.lifecycle:lifecycle-process:2.8.3] /Users/froda/.gradle/caches/9.0.0/transforms/ec2a6b6149753017976343b78625d6cf/transformed/lifecycle-process-2.8.3/AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.lifecycle:lifecycle-process:2.8.6] /Users/froda/.gradle/caches/9.0.0/transforms/14d242f584fbca3c6ae03c1a1c5fd52b/transformed/lifecycle-process-2.8.6/AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.lifecycle:lifecycle-process:2.8.6] /Users/froda/.gradle/caches/9.0.0/transforms/14d242f584fbca3c6ae03c1a1c5fd52b/transformed/lifecycle-process-2.8.6/AndroidManifest.xml:24:9-32:20
 MERGED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/froda/.gradle/caches/9.0.0/transforms/eda7de6067060124c5286ab39bc8cbe2/transformed/profileinstaller-1.3.1/AndroidManifest.xml:24:9-32:20
 MERGED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/froda/.gradle/caches/9.0.0/transforms/eda7de6067060124c5286ab39bc8cbe2/transformed/profileinstaller-1.3.1/AndroidManifest.xml:24:9-32:20
 MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/froda/.gradle/caches/9.0.0/transforms/227a3be8781ef4b6300a8f3bccb88b0e/transformed/startup-runtime-1.1.1/AndroidManifest.xml:26:9-30:34
@@ -263,11 +263,11 @@ ADDED from [androidx.core:core:1.13.1] /Users/froda/.gradle/caches/9.0.0/transfo
 	android:name
 		ADDED from [androidx.core:core:1.13.1] /Users/froda/.gradle/caches/9.0.0/transforms/b12bc37f3c78bd3e35ab75634da05b99/transformed/core-1.13.1/AndroidManifest.xml:26:22-94
 meta-data#androidx.lifecycle.ProcessLifecycleInitializer
-ADDED from [androidx.lifecycle:lifecycle-process:2.8.3] /Users/froda/.gradle/caches/9.0.0/transforms/ec2a6b6149753017976343b78625d6cf/transformed/lifecycle-process-2.8.3/AndroidManifest.xml:29:13-31:52
+ADDED from [androidx.lifecycle:lifecycle-process:2.8.6] /Users/froda/.gradle/caches/9.0.0/transforms/14d242f584fbca3c6ae03c1a1c5fd52b/transformed/lifecycle-process-2.8.6/AndroidManifest.xml:29:13-31:52
 	android:value
-		ADDED from [androidx.lifecycle:lifecycle-process:2.8.3] /Users/froda/.gradle/caches/9.0.0/transforms/ec2a6b6149753017976343b78625d6cf/transformed/lifecycle-process-2.8.3/AndroidManifest.xml:31:17-49
+		ADDED from [androidx.lifecycle:lifecycle-process:2.8.6] /Users/froda/.gradle/caches/9.0.0/transforms/14d242f584fbca3c6ae03c1a1c5fd52b/transformed/lifecycle-process-2.8.6/AndroidManifest.xml:31:17-49
 	android:name
-		ADDED from [androidx.lifecycle:lifecycle-process:2.8.3] /Users/froda/.gradle/caches/9.0.0/transforms/ec2a6b6149753017976343b78625d6cf/transformed/lifecycle-process-2.8.3/AndroidManifest.xml:30:17-78
+		ADDED from [androidx.lifecycle:lifecycle-process:2.8.6] /Users/froda/.gradle/caches/9.0.0/transforms/14d242f584fbca3c6ae03c1a1c5fd52b/transformed/lifecycle-process-2.8.6/AndroidManifest.xml:30:17-78
 meta-data#androidx.profileinstaller.ProfileInstallerInitializer
 ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/froda/.gradle/caches/9.0.0/transforms/eda7de6067060124c5286ab39bc8cbe2/transformed/profileinstaller-1.3.1/AndroidManifest.xml:29:13-31:52
 	android:value

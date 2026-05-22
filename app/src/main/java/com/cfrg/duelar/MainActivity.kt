@@ -12,6 +12,8 @@ import android.widget.Toast
 import android.graphics.Paint
 import android.graphics.Typeface
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import androidx.lifecycle.lifecycleScope
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
@@ -799,27 +801,66 @@ class MainActivity : ComponentActivity() {
             "Zen instrumental" -> R.raw.ambient_zen
             "Piano calmo" -> R.raw.ambient_piano
             "Cuencos suaves" -> R.raw.ambient_bowls
+            "Viento calmo" -> R.raw.ambient_wind
             else -> R.raw.ambient_zen
         }
 
+        ambientPlayer?.stop()
         ambientPlayer?.release()
 
-        val player = MediaPlayer.create(this, resId)
-        if (player == null) {
-            Toast.makeText(this, "No se pudo cargar el sonido ambiente", Toast.LENGTH_SHORT).show()
-            return
-        }
+        try {
+            val player = MediaPlayer.create(this, resId)
+            if (player == null) {
+                Toast.makeText(this, "No se pudo cargar el sonido ambiente", Toast.LENGTH_SHORT).show()
+                return
+            }
 
-        ambientPlayer = player.apply {
-            isLooping = true
-            setVolume(0.85f, 0.85f)
-            start()
+            ambientPlayer = player.apply {
+                isLooping = true
+                setVolume(0f, 0f) // Start at zero for fade in
+                start()
+            }
+            
+            // Fade in effect
+            val fadeInDuration = 2000L
+            val steps = 20
+            val volumeStep = 0.85f / steps
+            
+            lifecycleScope.launch {
+                for (i in 1..steps) {
+                    val vol = i * volumeStep
+                    ambientPlayer?.setVolume(vol, vol)
+                    delay(fadeInDuration / steps)
+                }
+            }
+        } catch (e: Exception) {
+            Toast.makeText(this, "Error al reproducir audio", Toast.LENGTH_SHORT).show()
         }
     }
 
     private fun stopAmbient() {
-        ambientPlayer?.release()
-        ambientPlayer = null
+        val player = ambientPlayer ?: return
+        
+        val fadeOutDuration = 1500L
+        val steps = 15
+        val currentVol = 0.85f
+        val volumeStep = currentVol / steps
+        
+        lifecycleScope.launch {
+            try {
+                for (i in steps downTo 0) {
+                    val vol = i * volumeStep
+                    player.setVolume(vol, vol)
+                    delay(fadeOutDuration / steps)
+                }
+                player.stop()
+                player.release()
+                if (ambientPlayer == player) ambientPlayer = null
+            } catch (e: Exception) {
+                player.release()
+                if (ambientPlayer == player) ambientPlayer = null
+            }
+        }
     }
 
     private fun scheduleDailyReminder(hour: Int, minute: Int) {
@@ -1477,7 +1518,7 @@ class MainActivity : ComponentActivity() {
                 Spacer(Modifier.height(8.dp))
                 Text("Usalo solo si te ayuda a entrar en pausa. Si no lo escuchás, revisá el volumen multimedia del celular.", color = muted, fontSize = 16.sp, lineHeight = 25.sp)
                 Spacer(Modifier.height(12.dp))
-                listOf("Zen instrumental", "Piano calmo", "Cuencos suaves", "Lluvia suave", "Olas lentas").forEach { sound ->
+                listOf("Zen instrumental", "Piano calmo", "Cuencos suaves", "Lluvia suave", "Olas lentas", "Viento calmo").forEach { sound ->
                     Choice(sound, selectedSound == sound) { onSelectSound(sound) }
                 }
                 PrimaryButton(if (isPlaying) "Pausar sonido" else "Reproducir sonido", onToggle)
